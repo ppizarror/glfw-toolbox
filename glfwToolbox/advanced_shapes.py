@@ -10,7 +10,7 @@ MIT License
 Copyright (c) 2019 Pablo Pizarro R.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
+of this software and associated documentation files (the 'Software'), to deal
 in the Software without restriction, including without limitation the rights
 to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 copies of the Software, and to permit persons to whom the Software is
@@ -19,7 +19,7 @@ furnished to do so, subject to the following conditions:
 The above copyright notice and this permission notice shall be included in all
 copies or substantial portions of the Software.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
 AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
@@ -61,7 +61,7 @@ class AdvancedGPUShape(object):
         self._enabled = enabled
         self._shader = shader
 
-    def setShader(self, shader):
+    def set_shader(self, shader):
         """
         Set shader.
 
@@ -92,43 +92,43 @@ class AdvancedGPUShape(object):
         """
         self._model = _tr.matmul([_tr.scale(sx, sy, sz), self._model])
 
-    def uniformScale(self, s=1):
+    def uniform_scale(self, s=1):
         """
         Uniform scale model.
 
         :param s:
         :return:
         """
-        self._model = _tr.matmul([_tr.uniformScale(s), self._model])
+        self._model = _tr.matmul([_tr.uniform_scale(s), self._model])
 
-    def rotationX(self, theta=0):
+    def rotation_x(self, theta=0):
         """
         Rotate model.
 
         :param theta:
         :return:
         """
-        self._model = _tr.matmul([_tr.rotationX(theta), self._model])
+        self._model = _tr.matmul([_tr.rotation_x(theta), self._model])
 
-    def rotationY(self, theta=0):
+    def rotation_y(self, theta=0):
         """
         Rotate model.
 
         :param theta:
         :return:
         """
-        self._model = _tr.matmul([_tr.rotationY(theta), self._model])
+        self._model = _tr.matmul([_tr.rotation_y(theta), self._model])
 
-    def rotationZ(self, theta=0):
+    def rotation_z(self, theta=0):
         """
         Rotate model.
 
         :param theta:
         :return:
         """
-        self._model = _tr.matmul([_tr.rotationZ(theta), self._model])
+        self._model = _tr.matmul([_tr.rotation_z(theta), self._model])
 
-    def rotationA(self, theta, axis):
+    def rotation_a(self, theta, axis):
         """
         Rotate model.
 
@@ -136,7 +136,7 @@ class AdvancedGPUShape(object):
         :param axis:
         :return:
         """
-        self._model = _tr.matmul([_tr.rotationA(theta, axis), self._model])
+        self._model = _tr.matmul([_tr.rotation_a(theta, axis), self._model])
 
     def shearing(self, xy=0, yx=0, xz=0, zx=0, yz=0, zy=0):
         """
@@ -152,7 +152,7 @@ class AdvancedGPUShape(object):
         """
         self._model = _tr.matmul([_tr.shearing(xy, yx, xz, zx, yz, zy), self._model])
 
-    def applyTemporalTransform(self, t):
+    def apply_temporal_transform(self, t):
         """
         Apply temporal transform to model until drawing.
 
@@ -190,7 +190,7 @@ class AdvancedGPUShape(object):
         if view is not None and shader.keyView != '':
             _glUniformMatrix4fv(_glGetUniformLocation(shader.shaderProgram, shader.keyView), 1, _GL_TRUE, view)
         for i in self._shapes:
-            shader.drawShape(i, mode)
+            shader.draw_shape(i, mode)
         if self._modelPrev is not None:
             self._model = self._modelPrev
             self._modelPrev = None

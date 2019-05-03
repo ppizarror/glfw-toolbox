@@ -13,7 +13,7 @@ MIT License
 Copyright (c) 2019 Pablo Pizarro R.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
+of this software and associated documentation files (the 'Software'), to deal
 in the Software without restriction, including without limitation the rights
 to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 copies of the Software, and to permit persons to whom the Software is
@@ -22,7 +22,7 @@ furnished to do so, subject to the following conditions:
 The above copyright notice and this permission notice shall be included in all
 copies or substantial portions of the Software.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
 AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
@@ -43,7 +43,11 @@ class Shape:
         self.textureFileName = texture_file_name
 
 
-def createAxis(length=1.0):
+def create_axis(length=1.0):
+    """
+    :param length:
+    :return:
+    """
     # Defining the location and colors of each vertex  of the shape
     vertices = [
         #    positions        colors
@@ -66,7 +70,10 @@ def createAxis(length=1.0):
     return Shape(vertices, indices)
 
 
-def createRainbowTriangle():
+def create_rainbow_triangle():
+    """
+    :return:
+    """
     # Defining the location and colors of each vertex  of the shape
     vertices = [
         #   positions        colors
@@ -81,7 +88,10 @@ def createRainbowTriangle():
     return Shape(vertices, indices)
 
 
-def createRainbowQuad():
+def create_rainbow_quad():
+    """
+    :return:
+    """
     # Defining the location and colors of each vertex  of the shape
     vertices = [
         #   positions        colors
@@ -99,7 +109,13 @@ def createRainbowQuad():
     return Shape(vertices, indices)
 
 
-def createColorQuad(r, g, b):
+def create_color_quad(r, g, b):
+    """
+    :param r:
+    :param g:
+    :param b:
+    :return:
+    """
     # Defining locations and colors for each vertex of the shape
     vertices = [
         #   positions        colors
@@ -117,7 +133,13 @@ def createColorQuad(r, g, b):
     return Shape(vertices, indices)
 
 
-def createTextureQuad(image_filename, nx=1, ny=1):
+def create_texture_quad(image_filename, nx=1, ny=1):
+    """
+    :param image_filename:
+    :param nx:
+    :param ny:
+    :return:
+    """
     # Defining locations and texture coordinates for each vertex of the shape
     vertices = [
         #   positions        texture
@@ -132,12 +154,15 @@ def createTextureQuad(image_filename, nx=1, ny=1):
         0, 1, 2,
         2, 3, 0]
 
-    textureFileName = image_filename
+    texture_file_name = image_filename
 
-    return Shape(vertices, indices, textureFileName)
+    return Shape(vertices, indices, texture_file_name)
 
 
-def createRainbowCube():
+def create_rainbow_cube():
+    """
+    :return:
+    """
     # Defining the location and colors of each vertex  of the shape
     vertices = [
         #    positions         colors
@@ -164,7 +189,13 @@ def createRainbowCube():
     return Shape(vertices, indices)
 
 
-def createColorCube(r, g, b):
+def create_color_cube(r, g, b):
+    """
+    :param r:
+    :param g:
+    :param b:
+    :return:
+    """
     # Defining the location and colors of each vertex  of the shape
     vertices = [
         #    positions        colors
@@ -191,7 +222,11 @@ def createColorCube(r, g, b):
     return Shape(vertices, indices)
 
 
-def createTextureCube(image_filename):
+def create_texture_cube(image_filename):
+    """
+    :param image_filename:
+    :return:
+    """
     # Defining locations and texture coordinates for each vertex of the shape
     vertices = [
         #   positions         texture coordinates
@@ -245,7 +280,10 @@ def createTextureCube(image_filename):
     return Shape(vertices, indices, image_filename)
 
 
-def createRainbowNormalsCube():
+def create_rainbow_normals_cube():
+    """
+    :return:
+    """
     sq3 = 0.57735027
 
     # Defining the location and colors of each vertex  of the shape
@@ -272,7 +310,13 @@ def createRainbowNormalsCube():
     return Shape(vertices, indices)
 
 
-def createColorNormalsCube(r, g, b):
+def create_color_normals_cube(r, g, b):
+    """
+    :param r:
+    :param g:
+    :param b:
+    :return:
+    """
     # Defining the location and colors of each vertex  of the shape
     vertices = [
         #   positions         colors   normals
@@ -326,7 +370,11 @@ def createColorNormalsCube(r, g, b):
     return Shape(vertices, indices)
 
 
-def createTextureNormalsCube(image_filename):
+def create_texture_normals_cube(image_filename):
+    """
+    :param image_filename:
+    :return:
+    """
     # Defining locations,texture coordinates and normals for each vertex of the shape
     vertices = [
         #   positions            tex coords   normals
@@ -376,7 +424,7 @@ def createTextureNormalsCube(image_filename):
     return Shape(vertices, indices, image_filename)
 
 
-def __vertexUnpack3(vertex):
+def __vertex_unpack3(vertex):
     """
     Extend vertex to 3 dimension.
 
@@ -388,7 +436,7 @@ def __vertexUnpack3(vertex):
     return vertex
 
 
-def create4VertexTexture(image_filename, p1, p2, p3, p4, nx=1, ny=1):
+def create4_vertex_texture(image_filename, p1, p2, p3, p4, nx=1, ny=1):
     """
     Creates a 4-vertex poly with texture.
 
@@ -402,10 +450,10 @@ def create4VertexTexture(image_filename, p1, p2, p3, p4, nx=1, ny=1):
     :return:
     """
     # Extend
-    p1 = __vertexUnpack3(p1)
-    p2 = __vertexUnpack3(p2)
-    p3 = __vertexUnpack3(p3)
-    p4 = __vertexUnpack3(p4)
+    p1 = __vertex_unpack3(p1)
+    p2 = __vertex_unpack3(p2)
+    p3 = __vertex_unpack3(p3)
+    p4 = __vertex_unpack3(p4)
 
     # Dissamble vertices
     x1, y1, z1 = p1
@@ -430,7 +478,7 @@ def create4VertexTexture(image_filename, p1, p2, p3, p4, nx=1, ny=1):
     return Shape(vertices, indices, image_filename)
 
 
-def create4VertexTextureNormal(image_filename, p1, p2, p3, p4, nx=1, ny=1):
+def create4_vertex_texture_normal(image_filename, p1, p2, p3, p4, nx=1, ny=1):
     """
     Creates a 4-vertex poly with texture.
 
@@ -444,10 +492,10 @@ def create4VertexTextureNormal(image_filename, p1, p2, p3, p4, nx=1, ny=1):
     :return:
     """
     # Extend
-    p1 = __vertexUnpack3(p1)
-    p2 = __vertexUnpack3(p2)
-    p3 = __vertexUnpack3(p3)
-    p4 = __vertexUnpack3(p4)
+    p1 = __vertex_unpack3(p1)
+    p2 = __vertex_unpack3(p2)
+    p3 = __vertex_unpack3(p3)
+    p4 = __vertex_unpack3(p4)
 
     # Dissamble vertices
     x1, y1, z1 = p1
@@ -475,7 +523,7 @@ def create4VertexTextureNormal(image_filename, p1, p2, p3, p4, nx=1, ny=1):
     return Shape(vertices, indices, image_filename)
 
 
-def create4VertexColor(p1, p2, p3, p4, r, g, b):
+def create4_vertex_color(p1, p2, p3, p4, r, g, b):
     """
     Creates a 4-vertex poly with color.
 
@@ -489,10 +537,10 @@ def create4VertexColor(p1, p2, p3, p4, r, g, b):
     :return:
     """
     # Extend
-    p1 = __vertexUnpack3(p1)
-    p2 = __vertexUnpack3(p2)
-    p3 = __vertexUnpack3(p3)
-    p4 = __vertexUnpack3(p4)
+    p1 = __vertex_unpack3(p1)
+    p2 = __vertex_unpack3(p2)
+    p3 = __vertex_unpack3(p3)
+    p4 = __vertex_unpack3(p4)
 
     # Dissamble vertices
     x1, y1, z1 = p1
@@ -519,7 +567,7 @@ def create4VertexColor(p1, p2, p3, p4, r, g, b):
     return Shape(vertices, indices)
 
 
-def create4VertexColorNormal(p1, p2, p3, p4, r, g, b):
+def create4_vertex_color_normal(p1, p2, p3, p4, r, g, b):
     """
     Creates a 4-vertex figure with color and normals.
 
@@ -533,10 +581,10 @@ def create4VertexColorNormal(p1, p2, p3, p4, r, g, b):
     :return:
     """
     # Extend
-    p1 = __vertexUnpack3(p1)
-    p2 = __vertexUnpack3(p2)
-    p3 = __vertexUnpack3(p3)
-    p4 = __vertexUnpack3(p4)
+    p1 = __vertex_unpack3(p1)
+    p2 = __vertex_unpack3(p2)
+    p3 = __vertex_unpack3(p3)
+    p4 = __vertex_unpack3(p4)
 
     # Dissamble vertices
     x1, y1, z1 = p1
@@ -566,7 +614,7 @@ def create4VertexColorNormal(p1, p2, p3, p4, r, g, b):
     return Shape(vertices, indices)
 
 
-def createTriangleTexture(image_filename, p1, p2, p3, nx=1, ny=1):
+def create_triangle_texture(image_filename, p1, p2, p3, nx=1, ny=1):
     """
     Creates a triangle with textures.
 
@@ -600,7 +648,7 @@ def createTriangleTexture(image_filename, p1, p2, p3, nx=1, ny=1):
     return Shape(vertices, indices, image_filename)
 
 
-def createTriangleTextureNormal(image_filename, p1, p2, p3, nx=1, ny=1):
+def create_triangle_texture_normal(image_filename, p1, p2, p3, nx=1, ny=1):
     """
     Creates a triangle with textures.
 
@@ -637,7 +685,7 @@ def createTriangleTextureNormal(image_filename, p1, p2, p3, nx=1, ny=1):
     return Shape(vertices, indices, image_filename)
 
 
-def createTriangleColor(p1, p2, p3, r, g, b):
+def create_triangle_color(p1, p2, p3, r, g, b):
     """
     Creates a triangle with color.
 
@@ -650,9 +698,9 @@ def createTriangleColor(p1, p2, p3, r, g, b):
     :return:
     """
     # Extend
-    p1 = __vertexUnpack3(p1)
-    p2 = __vertexUnpack3(p2)
-    p3 = __vertexUnpack3(p3)
+    p1 = __vertex_unpack3(p1)
+    p2 = __vertex_unpack3(p2)
+    p3 = __vertex_unpack3(p3)
 
     # Dissamble vertices
     x1, y1, z1 = p1
@@ -676,7 +724,7 @@ def createTriangleColor(p1, p2, p3, r, g, b):
     return Shape(vertices, indices)
 
 
-def createTriangleColorNormal(p1, p2, p3, r, g, b):
+def create_triangle_color_normal(p1, p2, p3, r, g, b):
     """
     Creates a triangle with color.
 
@@ -689,9 +737,9 @@ def createTriangleColorNormal(p1, p2, p3, r, g, b):
     :return:
     """
     # Extend
-    p1 = __vertexUnpack3(p1)
-    p2 = __vertexUnpack3(p2)
-    p3 = __vertexUnpack3(p3)
+    p1 = __vertex_unpack3(p1)
+    p2 = __vertex_unpack3(p2)
+    p3 = __vertex_unpack3(p3)
 
     # Dissamble vertices
     x1, y1, z1 = p1

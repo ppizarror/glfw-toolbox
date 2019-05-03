@@ -10,7 +10,7 @@ MIT License
 Copyright (c) 2019 Pablo Pizarro R.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
+of this software and associated documentation files (the 'Software'), to deal
 in the Software without restriction, including without limitation the rights
 to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 copies of the Software, and to permit persons to whom the Software is
@@ -19,7 +19,7 @@ furnished to do so, subject to the following conditions:
 The above copyright notice and this permission notice shall be included in all
 copies or substantial portions of the Software.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
 AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
@@ -36,8 +36,8 @@ from OpenGL.GL import glUniform1f as _glUniform1f
 
 
 class Light(object):
-    def __init__(self, shader, position, color, shininess=100, constantAttenuation=0.001, linearAttenuation=0.1,
-                 qudraticAttenuation=0.01):
+    def __init__(self, position, color, shader=None, shininess=100, constant_attenuation=0.001, linear_attenuation=0.1,
+                 qudratic_attenuation=0.01):
         """
         Constructor.
 
@@ -48,12 +48,12 @@ class Light(object):
         :type color: list
         :param shininess: Shininess
         :type shininess: float
-        :param constantAttenuation: Light constant attenuation
-        :type constantAttenuation: float
-        :param linearAttenuation: Light linear attenuation
-        :type linearAttenuation: float
-        :param qudraticAttenuation: Light quadratic attenuation
-        :type qudraticAttenuation: float
+        :param constant_attenuation: Light constant attenuation
+        :type constant_attenuation: float
+        :param linear_attenuation: Light linear attenuation
+        :type linear_attenuation: float
+        :param qudratic_attenuation: Light quadratic attenuation
+        :type qudratic_attenuation: float
         """
         assert isinstance(color, list), 'Color is not a list'
         assert len(color) == 3, 'Color must have 3 components'
@@ -63,9 +63,9 @@ class Light(object):
         self._position = position
         self._color = color
         self._shininess = shininess
-        self._cAtt = constantAttenuation
-        self._lAtt = linearAttenuation
-        self._qAtt = qudraticAttenuation
+        self._cAtt = constant_attenuation
+        self._lAtt = linear_attenuation
+        self._qAtt = qudratic_attenuation
         self._enabled = True
 
     def move_position(self, dx=0, dy=0, dz=0):
@@ -138,7 +138,7 @@ class Light(object):
 
         :return:
         """
-        if not self._enabled:
+        if not self._enabled or self._shader is None:
             return
         _glUseProgram(self._shader.shaderProgram)
         _glUniform3f(_glGetUniformLocation(self._shader.shaderProgram, 'lightColor'),

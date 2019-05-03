@@ -10,7 +10,7 @@ MIT License
 Copyright (c) 2019 Pablo Pizarro R.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
+of this software and associated documentation files (the 'Software'), to deal
 in the Software without restriction, including without limitation the rights
 to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 copies of the Software, and to permit persons to whom the Software is
@@ -19,7 +19,7 @@ furnished to do so, subject to the following conditions:
 The above copyright notice and this permission notice shall be included in all
 copies or substantial portions of the Software.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
 AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
@@ -136,8 +136,8 @@ if __name__ == '__main__':
     glEnable(GL_DEPTH_TEST)
 
     # Create models
-    gpuAxis = es.toGPUShape(shapes.createAxis(1))
-    obj_axis = bs_ext.AdvancedGPUShape(gpuAxis, shader=colorShaderProgram)
+    gpuAxis = es.to_gpu_shape(shapes.create_axis(1))
+    obj_axis = AdvancedGPUShape(gpuAxis, shader=colorShaderProgram)
 
     # Create cilynder, the objective is create many cuads from the bottom, top and
     # mantle. The cilynder is parametrized using an angle theta, a radius r and
@@ -180,8 +180,8 @@ if __name__ == '__main__':
             d = [r * np.cos(ang), r * np.sin(ang), h / lon * i]
 
             # Create quad
-            shape = bs_ext.create4VertexColorNormal(a, b, c, d, color['r'], color['g'], color['b'])
-            cylinder_shape.append(es.toGPUShape(shape))
+            shape = shapes.create4_vertex_color_normal(a, b, c, d, color['r'], color['g'], color['b'])
+            cylinder_shape.append(es.to_gpu_shape(shape))
 
     # Add the two covers
     for j in range(lat):
@@ -191,18 +191,18 @@ if __name__ == '__main__':
         a = [0, 0, 0]
         b = [r * np.cos(ang), r * np.sin(ang), 0]
         c = [r * np.cos(ang + dang), r * np.sin(ang + dang), 0]
-        shape = bs_ext.createTriangleColorNormal(c, b, a, color['r'], color['g'], color['b'])
-        cylinder_shape.append(es.toGPUShape(shape))
+        shape = shapes.create_triangle_color_normal(c, b, a, color['r'], color['g'], color['b'])
+        cylinder_shape.append(es.to_gpu_shape(shape))
 
         # Top
         a = [0, 0, h]
         b = [r * np.cos(ang), r * np.sin(ang), h]
         c = [r * np.cos(ang + dang), r * np.sin(ang + dang), h]
-        shape = bs_ext.createTriangleColorNormal(c, b, a, color['r'], color['g'], color['b'])
-        cylinder_shape.append(es.toGPUShape(shape))
+        shape = shapes.create_triangle_color_normal(c, b, a, color['r'], color['g'], color['b'])
+        cylinder_shape.append(es.to_gpu_shape(shape))
 
     # Create cylinder object
-    obj_cylinder = bs_ext.AdvancedGPUShape(cylinder_shape, shader=phongPipeline)
+    obj_cylinder = AdvancedGPUShape(cylinder_shape, shader=phongPipeline)
 
     # Create light
     obj_light = light.Light(shader=phongPipeline, position=[5, 5, 5], color=[1, 1, 1])

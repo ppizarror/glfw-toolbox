@@ -10,7 +10,7 @@ MIT License
 Copyright (c) 2019 Pablo Pizarro R.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
+of this software and associated documentation files (the 'Software'), to deal
 in the Software without restriction, including without limitation the rights
 to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 copies of the Software, and to permit persons to whom the Software is
@@ -19,7 +19,7 @@ furnished to do so, subject to the following conditions:
 The above copyright notice and this permission notice shall be included in all
 copies or substantial portions of the Software.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
 AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
@@ -31,10 +31,21 @@ import numpy as np
 
 
 def identity():
+    """
+    Identity matrix.
+
+    :return:
+    """
     return np.identity(4, dtype=np.float32)
 
 
-def uniformScale(s):
+def uniform_scale(s):
+    """
+    Uniform scale transformation.
+
+    :param s:
+    :return:
+    """
     return np.array([
         [s, 0, 0, 0],
         [0, s, 0, 0],
@@ -43,6 +54,14 @@ def uniformScale(s):
 
 
 def scale(sx, sy, sz):
+    """
+    Scale matrix.
+
+    :param sx:
+    :param sy:
+    :param sz:
+    :return:
+    """
     return np.array([
         [sx, 0, 0, 0],
         [0, sy, 0, 0],
@@ -50,7 +69,13 @@ def scale(sx, sy, sz):
         [0, 0, 0, 1]], dtype=np.float32)
 
 
-def rotationX(theta):
+def rotation_x(theta):
+    """
+    Rotation around x.
+
+    :param theta:
+    :return:
+    """
     sin_theta = np.sin(theta)
     cos_theta = np.cos(theta)
 
@@ -61,7 +86,13 @@ def rotationX(theta):
         [0, 0, 0, 1]], dtype=np.float32)
 
 
-def rotationY(theta):
+def rotation_y(theta):
+    """
+    Rotation around y.
+
+    :param theta:
+    :return:
+    """
     sin_theta = np.sin(theta)
     cos_theta = np.cos(theta)
 
@@ -72,7 +103,13 @@ def rotationY(theta):
         [0, 0, 0, 1]], dtype=np.float32)
 
 
-def rotationZ(theta):
+def rotation_z(theta):
+    """
+    Rotation around z.
+
+    :param theta:
+    :return:
+    """
     sin_theta = np.sin(theta)
     cos_theta = np.cos(theta)
 
@@ -83,7 +120,14 @@ def rotationZ(theta):
         [0, 0, 0, 1]], dtype=np.float32)
 
 
-def rotationA(theta, axis):
+def rotation_a(theta, axis):
+    """
+    Rotation around axis.
+
+    :param theta:
+    :param axis:
+    :return:
+    """
     s = np.sin(theta)
     c = np.cos(theta)
 
@@ -114,6 +158,14 @@ def rotationA(theta, axis):
 
 
 def translate(tx, ty, tz):
+    """
+    Translate matrix.
+
+    :param tx:
+    :param ty:
+    :param tz:
+    :return:
+    """
     return np.array([
         [1, 0, 0, tx],
         [0, 1, 0, ty],
@@ -122,6 +174,17 @@ def translate(tx, ty, tz):
 
 
 def shearing(xy, yx, xz, zx, yz, zy):
+    """
+    Shearing matrix.
+
+    :param xy:
+    :param yx:
+    :param xz:
+    :param zx:
+    :param yz:
+    :param zy:
+    :return:
+    """
     return np.array([
         [1, xy, xz, 0],
         [yx, 1, yz, 0],
@@ -130,14 +193,30 @@ def shearing(xy, yx, xz, zx, yz, zy):
 
 
 def matmul(mats):
+    """
+    Matrix multiplication.
+
+    :param mats:
+    :return:
+    """
     out = mats[0]
     for i in range(1, len(mats)):
         out = np.matmul(out, mats[i])
-
     return out
 
 
 def frustum(left, right, bottom, top, near, far):
+    """
+    Frustrum viewing matrix.
+
+    :param left:
+    :param right:
+    :param bottom:
+    :param top:
+    :param near:
+    :param far:
+    :return:
+    """
     r_l = right - left
     t_b = top - bottom
     f_n = far - near
@@ -161,12 +240,32 @@ def frustum(left, right, bottom, top, near, far):
 
 
 def perspective(fovy, aspect, near, far):
+    """
+    Perspective viewing matrix.
+
+    :param fovy:
+    :param aspect:
+    :param near:
+    :param far:
+    :return:
+    """
     half_height = np.tan(np.pi * fovy / 360) * near
     half_width = half_height * aspect
     return frustum(-half_width, half_width, -half_height, half_height, near, far)
 
 
 def ortho(left, right, bottom, top, near, far):
+    """
+    Orthographic viewing matrix.
+
+    :param left:
+    :param right:
+    :param bottom:
+    :param top:
+    :param near:
+    :param far:
+    :return:
+    """
     r_l = right - left
     t_b = top - bottom
     f_n = far - near
@@ -189,7 +288,15 @@ def ortho(left, right, bottom, top, near, far):
          1]], dtype=np.float32)
 
 
-def lookAt(eye, at, up):
+def look_at(eye, at, up):
+    """
+    Look at operator.
+
+    :param eye:
+    :param at:
+    :param up:
+    :return:
+    """
     forward = (at - eye)
     forward = forward / np.linalg.norm(forward)
 

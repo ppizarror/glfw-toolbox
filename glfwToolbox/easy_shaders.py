@@ -50,7 +50,7 @@ class GPUShape:
         self.size = 0
 
 
-def textureSimpleSetup(texture, img_name, wrap_mode, filter_mode):
+def texture_simple_setup(texture, img_name, wrap_mode, filter_mode):
     # wrap_mode: GL_REPEAT, GL_CLAMP_TO_EDGE
     # filter_mode: GL_LINEAR, GL_NEAREST
 
@@ -71,47 +71,48 @@ def textureSimpleSetup(texture, img_name, wrap_mode, filter_mode):
     img_data = img_data[-1:0:-1, :]
 
     if image.mode == 'RGB':
-        internalFormat = GL_RGB
+        internal_format = GL_RGB
         formatf = GL_RGB
     elif image.mode == 'RGBA':
-        internalFormat = GL_RGBA
+        internal_format = GL_RGBA
         formatf = GL_RGBA
     else:
         print('Image mode not supported.')
         raise Exception()
 
-    glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, image.size[0], image.size[1], 0, formatf, GL_UNSIGNED_BYTE, img_data)
+    glTexImage2D(GL_TEXTURE_2D, 0, internal_format, image.size[0], image.size[1], 0, formatf, GL_UNSIGNED_BYTE,
+                 img_data)
 
 
-def toGPUShape(shape, wrapMode=None, filterMode=None):
+def to_gpu_shape(shape, wrap_mode=None, filter_mode=None):
     assert isinstance(shape, shapes.Shape)
 
-    vertexData = np.array(shape.vertices, dtype=np.float32)
+    vertex_data = np.array(shape.vertices, dtype=np.float32)
     indices = np.array(shape.indices, dtype=np.uint32)
 
     # Here the new shape will be stored
-    gpuShape = GPUShape()
+    gpu_shape = GPUShape()
 
-    gpuShape.size = len(shape.indices)
-    gpuShape.vao = glGenVertexArrays(1)
-    gpuShape.vbo = glGenBuffers(1)
-    gpuShape.ebo = glGenBuffers(1)
+    gpu_shape.size = len(shape.indices)
+    gpu_shape.vao = glGenVertexArrays(1)
+    gpu_shape.vbo = glGenBuffers(1)
+    gpu_shape.ebo = glGenBuffers(1)
 
     # Vertex data must be attached to a Vertex Buffer Object (VBO)
-    glBindBuffer(GL_ARRAY_BUFFER, gpuShape.vbo)
-    glBufferData(GL_ARRAY_BUFFER, len(vertexData) * INT_BYTES, vertexData, GL_STATIC_DRAW)
+    glBindBuffer(GL_ARRAY_BUFFER, gpu_shape.vbo)
+    glBufferData(GL_ARRAY_BUFFER, len(vertex_data) * INT_BYTES, vertex_data, GL_STATIC_DRAW)
 
     # Connections among vertices are stored in the Elements Buffer Object (EBO)
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, gpuShape.ebo)
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, gpu_shape.ebo)
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, len(indices) * INT_BYTES, indices, GL_STATIC_DRAW)
 
     if shape.textureFileName is not None:
-        assert wrapMode is not None and filterMode is not None
+        assert wrap_mode is not None and filter_mode is not None
 
-        gpuShape.texture = glGenTextures(1)
-        textureSimpleSetup(gpuShape.texture, shape.textureFileName, wrapMode, filterMode)
+        gpu_shape.texture = glGenTextures(1)
+        texture_simple_setup(gpu_shape.texture, shape.textureFileName, wrap_mode, filter_mode)
 
-    return gpuShape
+    return gpu_shape
 
 
 class SimpleShaderProgram:
@@ -152,7 +153,7 @@ class SimpleShaderProgram:
             OpenGL.GL.shaders.compileShader(vertex_shader, GL_VERTEX_SHADER),
             OpenGL.GL.shaders.compileShader(fragment_shader, GL_FRAGMENT_SHADER))
 
-    def drawShape(self, shape, mode=GL_TRIANGLES):
+    def draw_shape(self, shape, mode=GL_TRIANGLES):
         assert isinstance(shape, GPUShape)
 
         # Binding the proper buffers
@@ -216,7 +217,7 @@ class SimpleTextureShaderProgram:
             OpenGL.GL.shaders.compileShader(vertex_shader, GL_VERTEX_SHADER),
             OpenGL.GL.shaders.compileShader(fragment_shader, GL_FRAGMENT_SHADER))
 
-    def drawShape(self, shape, mode=GL_TRIANGLES):
+    def draw_shape(self, shape, mode=GL_TRIANGLES):
         assert isinstance(shape, GPUShape)
 
         # Binding the proper buffers
@@ -230,9 +231,9 @@ class SimpleTextureShaderProgram:
         glVertexAttribPointer(position, 3, GL_FLOAT, GL_FALSE, 20, ctypes.c_void_p(0))
         glEnableVertexAttribArray(position)
 
-        texCoords = glGetAttribLocation(self.shaderProgram, 'texCoords')
-        glVertexAttribPointer(texCoords, 2, GL_FLOAT, GL_FALSE, 20, ctypes.c_void_p(12))
-        glEnableVertexAttribArray(texCoords)
+        tex_coords = glGetAttribLocation(self.shaderProgram, 'tex_coords')
+        glVertexAttribPointer(tex_coords, 2, GL_FLOAT, GL_FALSE, 20, ctypes.c_void_p(12))
+        glEnableVertexAttribArray(tex_coords)
 
         # Render the active element buffer with the active shader program
         glDrawElements(mode, shape.size, GL_UNSIGNED_INT, None)
@@ -280,7 +281,7 @@ class SimpleTransformShaderProgram:
             OpenGL.GL.shaders.compileShader(vertex_shader, OpenGL.GL.GL_VERTEX_SHADER),
             OpenGL.GL.shaders.compileShader(fragment_shader, OpenGL.GL.GL_FRAGMENT_SHADER))
 
-    def drawShape(self, shape, mode=GL_TRIANGLES):
+    def draw_shape(self, shape, mode=GL_TRIANGLES):
         assert isinstance(shape, GPUShape)
 
         # Binding the proper buffers
@@ -346,7 +347,7 @@ class SimpleTextureTransformShaderProgram:
             OpenGL.GL.shaders.compileShader(vertex_shader, GL_VERTEX_SHADER),
             OpenGL.GL.shaders.compileShader(fragment_shader, GL_FRAGMENT_SHADER))
 
-    def drawShape(self, shape, mode=GL_TRIANGLES):
+    def draw_shape(self, shape, mode=GL_TRIANGLES):
         assert isinstance(shape, GPUShape)
 
         # Binding the proper buffers
@@ -360,9 +361,9 @@ class SimpleTextureTransformShaderProgram:
         glVertexAttribPointer(position, 3, GL_FLOAT, GL_FALSE, 20, ctypes.c_void_p(0))
         glEnableVertexAttribArray(position)
 
-        texCoords = glGetAttribLocation(self.shaderProgram, 'texCoords')
-        glVertexAttribPointer(texCoords, 2, GL_FLOAT, GL_FALSE, 20, ctypes.c_void_p(12))
-        glEnableVertexAttribArray(texCoords)
+        tex_coords = glGetAttribLocation(self.shaderProgram, 'tex_coords')
+        glVertexAttribPointer(tex_coords, 2, GL_FLOAT, GL_FALSE, 20, ctypes.c_void_p(12))
+        glEnableVertexAttribArray(tex_coords)
 
         # Render the active element buffer with the active shader program
         glDrawElements(mode, shape.size, GL_UNSIGNED_INT, None)
@@ -410,7 +411,7 @@ class SimpleModelViewProjectionShaderProgram:
             OpenGL.GL.shaders.compileShader(vertex_shader, OpenGL.GL.GL_VERTEX_SHADER),
             OpenGL.GL.shaders.compileShader(fragment_shader, OpenGL.GL.GL_FRAGMENT_SHADER))
 
-    def drawShape(self, shape, mode=GL_TRIANGLES):
+    def draw_shape(self, shape, mode=GL_TRIANGLES):
         assert isinstance(shape, GPUShape)
 
         # Binding the proper buffers
@@ -478,7 +479,7 @@ class SimpleTextureModelViewProjectionShaderProgram:
             OpenGL.GL.shaders.compileShader(vertex_shader, OpenGL.GL.GL_VERTEX_SHADER),
             OpenGL.GL.shaders.compileShader(fragment_shader, OpenGL.GL.GL_FRAGMENT_SHADER))
 
-    def drawShape(self, shape, mode=GL_TRIANGLES):
+    def draw_shape(self, shape, mode=GL_TRIANGLES):
         assert isinstance(shape, GPUShape)
 
         # Binding the proper buffers
@@ -492,9 +493,9 @@ class SimpleTextureModelViewProjectionShaderProgram:
         glVertexAttribPointer(position, 3, GL_FLOAT, GL_FALSE, 20, ctypes.c_void_p(0))
         glEnableVertexAttribArray(position)
 
-        texCoords = glGetAttribLocation(self.shaderProgram, 'texCoords')
-        glVertexAttribPointer(texCoords, 2, GL_FLOAT, GL_FALSE, 20, ctypes.c_void_p(12))
-        glEnableVertexAttribArray(texCoords)
+        tex_coords = glGetAttribLocation(self.shaderProgram, 'tex_coords')
+        glVertexAttribPointer(tex_coords, 2, GL_FLOAT, GL_FALSE, 20, ctypes.c_void_p(12))
+        glEnableVertexAttribArray(tex_coords)
 
         # Render the active element buffer with the active shader program
         glDrawElements(mode, shape.size, GL_UNSIGNED_INT, None)
@@ -578,7 +579,7 @@ class SimpleFlatShaderProgram:
             OpenGL.GL.shaders.compileShader(vertex_shader, OpenGL.GL.GL_VERTEX_SHADER),
             OpenGL.GL.shaders.compileShader(fragment_shader, OpenGL.GL.GL_FRAGMENT_SHADER))
 
-    def drawShape(self, shape, mode=GL_TRIANGLES):
+    def draw_shape(self, shape, mode=GL_TRIANGLES):
         assert isinstance(shape, GPUShape)
 
         # Binding the proper buffers
@@ -691,7 +692,7 @@ class SimpleTextureFlatShaderProgram:
             OpenGL.GL.shaders.compileShader(vertex_shader, OpenGL.GL.GL_VERTEX_SHADER),
             OpenGL.GL.shaders.compileShader(fragment_shader, OpenGL.GL.GL_FRAGMENT_SHADER))
 
-    def drawShape(self, shape, mode=GL_TRIANGLES):
+    def draw_shape(self, shape, mode=GL_TRIANGLES):
         assert isinstance(shape, GPUShape)
 
         # Binding the proper buffers
@@ -796,7 +797,7 @@ class SimpleGouraudShaderProgram:
             OpenGL.GL.shaders.compileShader(vertex_shader, OpenGL.GL.GL_VERTEX_SHADER),
             OpenGL.GL.shaders.compileShader(fragment_shader, OpenGL.GL.GL_FRAGMENT_SHADER))
 
-    def drawShape(self, shape, mode=GL_TRIANGLES):
+    def draw_shape(self, shape, mode=GL_TRIANGLES):
         assert isinstance(shape, GPUShape)
 
         # Binding the proper buffers
@@ -909,7 +910,7 @@ class SimpleTextureGouraudShaderProgram:
             OpenGL.GL.shaders.compileShader(vertex_shader, OpenGL.GL.GL_VERTEX_SHADER),
             OpenGL.GL.shaders.compileShader(fragment_shader, OpenGL.GL.GL_FRAGMENT_SHADER))
 
-    def drawShape(self, shape, mode=GL_TRIANGLES):
+    def draw_shape(self, shape, mode=GL_TRIANGLES):
         assert isinstance(shape, GPUShape)
 
         # Binding the proper buffers
@@ -1020,7 +1021,7 @@ class SimplePhongShaderProgram:
             OpenGL.GL.shaders.compileShader(vertex_shader, OpenGL.GL.GL_VERTEX_SHADER),
             OpenGL.GL.shaders.compileShader(fragment_shader, OpenGL.GL.GL_FRAGMENT_SHADER))
 
-    def drawShape(self, shape, mode=GL_TRIANGLES):
+    def draw_shape(self, shape, mode=GL_TRIANGLES):
         assert isinstance(shape, GPUShape)
 
         # Binding the proper buffers
@@ -1135,7 +1136,7 @@ class SimpleTexturePhongShaderProgram:
             OpenGL.GL.shaders.compileShader(vertex_shader, OpenGL.GL.GL_VERTEX_SHADER),
             OpenGL.GL.shaders.compileShader(fragment_shader, OpenGL.GL.GL_FRAGMENT_SHADER))
 
-    def drawShape(self, shape, mode=GL_TRIANGLES):
+    def draw_shape(self, shape, mode=GL_TRIANGLES):
         assert isinstance(shape, GPUShape)
 
         # Binding the proper buffers

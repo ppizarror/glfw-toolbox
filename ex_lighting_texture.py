@@ -6,18 +6,17 @@ Showing lighting effects over a textured object: Flat, Gauraud and Phong
 
 import glfw
 from OpenGL.GL import *
-import OpenGL.GL.shaders
 import numpy as np
 import sys
 
-import transformations2 as tr2
-import basic_shapes as bs
-import easy_shaders as es
+import glfwToolbox.transformations as tr
+import glfwToolbox.shapes as shapes
+import glfwToolbox.easy_shaders as es
+from glfwToolbox.lights import Light
 
-
-LIGHT_FLAT    = 0
+LIGHT_FLAT = 0
 LIGHT_GOURAUD = 1
-LIGHT_PHONG   = 2
+LIGHT_PHONG = 2
 
 
 # A class to store the application control
@@ -31,33 +30,29 @@ class Controller:
 # We will use the global controller as communication with the callback function
 controller = Controller()
 
-def on_key(window, key, scancode, action, mods):
 
+# noinspection PyUnusedLocal,PyUnusedLocal,PyUnusedLocal,PyShadowingNames
+def on_key(window, key, scancode, action, mods):
     if action != glfw.PRESS:
         return
-    
+
     global controller
 
     if key == glfw.KEY_SPACE:
         controller.fillPolygon = not controller.fillPolygon
-
     elif key == glfw.KEY_LEFT_CONTROL:
         controller.showAxis = not controller.showAxis
-
     elif key == glfw.KEY_Q:
         controller.lightingModel = LIGHT_FLAT
-
     elif key == glfw.KEY_W:
         controller.lightingModel = LIGHT_GOURAUD
-
     elif key == glfw.KEY_E:
         controller.lightingModel = LIGHT_PHONG
-
     elif key == glfw.KEY_ESCAPE:
         sys.exit()
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
 
     # Initialize glfw
     if not glfw.init():
@@ -66,7 +61,7 @@ if __name__ == "__main__":
     width = 600
     height = 600
 
-    window = glfw.create_window(width, height, "Lighting + Textures demo", None, None)
+    window = glfw.create_window(width, height, 'Lighting + Textures demo', None, None)
 
     if not window:
         glfw.terminate()
@@ -93,11 +88,14 @@ if __name__ == "__main__":
     glEnable(GL_DEPTH_TEST)
 
     # Creating shapes on GPU memory
-    gpuAxis = es.toGPUShape(bs.createAxis(4))
-    gpuTextureCube = es.toGPUShape(bs.createTextureNormalsCube("bricks.jpg"), GL_REPEAT, GL_LINEAR)
+    gpuAxis = es.to_gpu_shape(shapes.create_axis(4))
+    gpuTextureCube = es.to_gpu_shape(shapes.create_texture_normals_cube('example_data/bricks.jpg'), GL_REPEAT, GL_LINEAR)
 
     t0 = glfw.get_time()
-    camera_theta = np.pi/4
+    camera_theta = np.pi / 4
+
+    # Create light
+    obj_light = Light(position=[5, 5, 5], color=[1, 1, 1])
 
     while not glfw.window_should_close(window):
 
@@ -109,31 +107,31 @@ if __name__ == "__main__":
         dt = t1 - t0
         t0 = t1
 
-        if (glfw.get_key(window, glfw.KEY_LEFT) == glfw.PRESS):
+        if glfw.get_key(window, glfw.KEY_LEFT) == glfw.PRESS:
             camera_theta -= 2 * dt
 
-        if (glfw.get_key(window, glfw.KEY_RIGHT) == glfw.PRESS):
-            camera_theta += 2* dt
-            
-        projection = tr2.perspective(45, float(width)/float(height), 0.1, 100)
+        if glfw.get_key(window, glfw.KEY_RIGHT) == glfw.PRESS:
+            camera_theta += 2 * dt
+
+        projection = tr.perspective(45, float(width) / float(height), 0.1, 100)
 
         camX = 3 * np.sin(camera_theta)
         camY = 3 * np.cos(camera_theta)
 
-        viewPos = np.array([camX,camY,2])
+        viewPos = np.array([camX, camY, 2])
 
-        view = tr2.lookAt(
+        view = tr.look_at(
             viewPos,
-            np.array([0,0,0]),
-            np.array([0,0,1])
+            np.array([0, 0, 0]),
+            np.array([0, 0, 1])
         )
-        model = tr2.identity()
+        model = tr.identity()
 
         # Clearing the screen in both, color and depth
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 
         # Filling or not the shapes depending on the controller state
-        if (controller.fillPolygon):
+        if controller.fillPolygon:
             glPolygonMode(GL_FRONT_AND_BACK, GL_FILL)
         else:
             glPolygonMode(GL_FRONT_AND_BACK, GL_LINE)
@@ -141,11 +139,11 @@ if __name__ == "__main__":
         # The axis is drawn without lighting effects
         if controller.showAxis:
             glUseProgram(colorPipeline.shaderProgram)
-            glUniformMatrix4fv(glGetUniformLocation(colorPipeline.shaderProgram, "projection"), 1, GL_TRUE, projection)
-            glUniformMatrix4fv(glGetUniformLocation(colorPipeline.shaderProgram, "view"), 1, GL_TRUE, view)
-            glUniformMatrix4fv(glGetUniformLocation(colorPipeline.shaderProgram, "model"), 1, GL_TRUE, tr2.identity())
-            colorPipeline.drawShape(gpuAxis, GL_LINES)
-        
+            glUniformMatrix4fv(glGetUniformLocation(colorPipeline.shaderProgram, 'projection'), 1, GL_TRUE, projection)
+            glUniformMatrix4fv(glGetUniformLocation(colorPipeline.shaderProgram, 'view'), 1, GL_TRUE, view)
+            glUniformMatrix4fv(glGetUniformLocation(colorPipeline.shaderProgram, 'model'), 1, GL_TRUE, tr.identity())
+            colorPipeline.draw_shape(gpuAxis, GL_LINES)
+
         # Selecting the lighting shader program
         if controller.lightingModel == LIGHT_FLAT:
             lightingPipeline = textureFlatPipeline
@@ -155,25 +153,20 @@ if __name__ == "__main__":
             lightingPipeline = texturePhongPipeline
         else:
             raise Exception()
-        
+
+        obj_light.set_shader(lightingPipeline)
         glUseProgram(lightingPipeline.shaderProgram)
 
-        # Setting all uniform shader variables
-        glUniform3f(glGetUniformLocation(lightingPipeline.shaderProgram, "lightColor"), 1.0, 1.0, 1.0)
-        glUniform3f(glGetUniformLocation(lightingPipeline.shaderProgram, "lightPos"), -5, -5, 5)
-        glUniform3f(glGetUniformLocation(lightingPipeline.shaderProgram, "viewPos"), viewPos[0], viewPos[1], viewPos[2])
-        glUniform1ui(glGetUniformLocation(lightingPipeline.shaderProgram, "shininess"), 100)
-        glUniform1f(glGetUniformLocation(lightingPipeline.shaderProgram, "constantAttenuation"), 0.001)
-        glUniform1f(glGetUniformLocation(lightingPipeline.shaderProgram, "linearAttenuation"), 0.1)
-        glUniform1f(glGetUniformLocation(lightingPipeline.shaderProgram, "quadraticAttenuation"), 0.01)
+        glUniformMatrix4fv(glGetUniformLocation(lightingPipeline.shaderProgram, 'projection'), 1, GL_TRUE, projection)
+        glUniformMatrix4fv(glGetUniformLocation(lightingPipeline.shaderProgram, 'view'), 1, GL_TRUE, view)
+        glUniformMatrix4fv(glGetUniformLocation(lightingPipeline.shaderProgram, 'model'), 1, GL_TRUE, model)
 
-        glUniformMatrix4fv(glGetUniformLocation(lightingPipeline.shaderProgram, "projection"), 1, GL_TRUE, projection)
-        glUniformMatrix4fv(glGetUniformLocation(lightingPipeline.shaderProgram, "view"), 1, GL_TRUE, view)
-        glUniformMatrix4fv(glGetUniformLocation(lightingPipeline.shaderProgram, "model"), 1, GL_TRUE, model)
+        # Setting all uniform shader variables
+        obj_light.place()
 
         # Drawing
-        lightingPipeline.drawShape(gpuTextureCube)
-        
+        lightingPipeline.draw_shape(gpuTextureCube)
+
         # Once the drawing is rendered, buffers are swap so an uncomplete drawing is never seen.
         glfw.swap_buffers(window)
 

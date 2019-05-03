@@ -10,7 +10,7 @@ MIT License
 Copyright (c) 2019 Pablo Pizarro R.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
+of this software and associated documentation files (the 'Software'), to deal
 in the Software without restriction, including without limitation the rights
 to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 copies of the Software, and to permit persons to whom the Software is
@@ -19,7 +19,7 @@ furnished to do so, subject to the following conditions:
 The above copyright notice and this permission notice shall be included in all
 copies or substantial portions of the Software.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
 AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
@@ -97,7 +97,7 @@ if __name__ == '__main__':
     colorShaderProgram = es.SimpleTransformShaderProgram()
 
     # Creating shapes on GPU memory
-    gpuCube = es.toGPUShape(shapes.createRainbowCube())
+    gpuCube = es.to_gpu_shape(shapes.create_rainbow_cube())
     cube = AdvancedGPUShape(gpuCube, shader=colorShaderProgram)
 
     while not glfw.window_should_close(window):
@@ -114,12 +114,12 @@ if __name__ == '__main__':
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 
         theta = glfw.get_time()
-        Rx = tr.rotationX(np.pi / 3)
-        Ry = tr.rotationY(theta)
+        Rx = tr.rotation_x(np.pi / 3)
+        Ry = tr.rotation_y(theta)
         transform = np.matmul(Rx, Ry)
 
         # Drawing the Cube
-        cube.applyTemporalTransform(transform)
+        cube.apply_temporal_transform(transform)
         cube.draw(transform)
 
         # Once the drawing is rendered, buffers are swap so an uncomplete drawing is never seen.

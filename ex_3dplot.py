@@ -10,7 +10,7 @@ MIT License
 Copyright (c) 2019 Pablo Pizarro R.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
+of this software and associated documentation files (the 'Software'), to deal
 in the Software without restriction, including without limitation the rights
 to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 copies of the Software, and to permit persons to whom the Software is
@@ -19,7 +19,7 @@ furnished to do so, subject to the following conditions:
 The above copyright notice and this permission notice shall be included in all
 copies or substantial portions of the Software.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
 AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
@@ -35,7 +35,7 @@ import sys
 import numpy as np
 
 from glfwToolbox.advanced_shapes import AdvancedGPUShape
-from glfwToolbox.colors import colorHSV
+from glfwToolbox.colors import color_hsv
 from glfwToolbox.mathlib import Point3
 from glfwToolbox.opengl import clear_buffer
 import glfwToolbox.camera as cam
@@ -167,7 +167,7 @@ if __name__ == '__main__':
     glEnable(GL_DEPTH_TEST)
 
     # Create models
-    gpuAxis = es.toGPUShape(shapes.createAxis(1))
+    gpuAxis = es.to_gpu_shape(shapes.create_axis(1))
     obj_axis = AdvancedGPUShape(gpuAxis, shader=colorShaderProgram)
 
     # Create the grid of the system
@@ -222,19 +222,19 @@ if __name__ == '__main__':
             zval = (pa[2] + pb[2] + pc[2] + pd[2]) / 4  # Average height of quad
             zf = (zval - zlim[0]) / (dz + 0.001)
             if not color_plot['enabled']:
-                color = colorHSV(1 - zf)
+                color = color_hsv(1 - zf)
             else:
                 color = color_plot['color']
 
             # Create the figure
-            quad_shapes.append(es.toGPUShape(shapes.create4VertexColorNormal(pa, pb, pc, pd,
-                                                                             color[0], color[1], color[2])))
+            quad_shapes.append(es.to_gpu_shape(shapes.create4_vertex_color_normal(pa, pb, pc, pd,
+                                                                                  color[0], color[1], color[2])))
 
     # Create main object
     obj_main = AdvancedGPUShape(quad_shapes, shader=phongPipeline)
 
     # Create light
-    obj_light = light.Light(phongPipeline, [0, 0, 6], [1, 1, 1])
+    obj_light = light.Light([0, 0, 6], [1, 1, 1], shader=phongPipeline)
 
     # Create projection
     # projection = tr.ortho(-1, 1, -1, 1, 0.1, 100)

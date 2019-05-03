@@ -10,7 +10,7 @@ MIT License
 Copyright (c) 2019 Pablo Pizarro R.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
+of this software and associated documentation files (the 'Software'), to deal
 in the Software without restriction, including without limitation the rights
 to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 copies of the Software, and to permit persons to whom the Software is
@@ -19,7 +19,7 @@ furnished to do so, subject to the following conditions:
 The above copyright notice and this permission notice shall be included in all
 copies or substantial portions of the Software.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
 AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
@@ -31,7 +31,7 @@ SOFTWARE.
 import math
 
 
-def __checkValidVertex(vertex):
+def __check_valid_vertex(vertex):
     """
     Check vertex is valid.
 
@@ -43,7 +43,7 @@ def __checkValidVertex(vertex):
     assert len(vertex) == 2, 'Vertex [{0}] invalid'.format(','.join(str(x) for x in vertex))
 
 
-def getSpline(vertices, fps):
+def get_spline(vertices, fps):
     """
     Create a CatMull Rom spline from vertices.
 
@@ -52,7 +52,7 @@ def getSpline(vertices, fps):
     :return:
     """
     for i in vertices:
-        __checkValidVertex(i)
+        __check_valid_vertex(i)
     crs = []
     for x in range(0, len(vertices) - 3):
         points = [vertices[x], vertices[x + 1], vertices[x + 2], vertices[x + 3]]
@@ -79,7 +79,7 @@ def getSpline(vertices, fps):
     return crs
 
 
-def getSplineFixed(vertices, fps):
+def get_spline_fixed(vertices, fps):
     """
     Create spline fixed.
 
@@ -92,4 +92,4 @@ def getSplineFixed(vertices, fps):
     v = vertices.copy()
     v.insert(0, vertices[0])
     v.append(vertices[-1])
-    return getSpline(v, fps)
+    return get_spline(v, fps)
