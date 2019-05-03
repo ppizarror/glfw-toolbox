@@ -1,10 +1,13 @@
 # coding=utf-8
 """
-PYOPENGL-TOOLBOX CAMERA
-Camera classes.
+CAMERA
+Camera implementations.
+
+GLFW-TOOLBOX
+Toolbox for GLFW Graphic Library.
 
 MIT License
-Copyright (c) 2018 Pablo Pizarro R.
+Copyright (c) 2019 Pablo Pizarro R.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -28,11 +31,11 @@ SOFTWARE.
 # Library imports
 from OpenGL.GL import glLoadIdentity as _glLoadIdentity
 from OpenGL.GLU import gluLookAt as _gluLookAt
-from lib.mathlib import _cos, _sin, _xyz_to_spr, _spr_to_xyz
-from lib.mathlib import Point3 as _Point3
-from lib.mathlib import Vector3 as _Vector3
+# noinspection PyProtectedMember
+from PyOpenGLtoolbox.mathlib import _cos, _sin, _xyz_to_spr, _spr_to_xyz
+from PyOpenGLtoolbox.mathlib import Point3 as _Point3
+from PyOpenGLtoolbox.mathlib import Vector3 as _Vector3
 import math as _math
-import lib.transformations2 as _tr2
 import numpy as _np
 
 # Constants
@@ -48,7 +51,7 @@ _CAMERA_SPHERICAL = 0x0fb
 _CAMERA_XYZ = 0x0fa
 
 
-class _Camera:
+class _Camera(object):
     """
     Abstract camera class.
     """
@@ -62,6 +65,100 @@ class _Camera:
     def place(self):
         """
         Place camera in world.
+        """
+        pass
+
+    def get_view(self):
+        """
+        Get view matrix.
+
+        :return:
+        :rtype: array
+        """
+        return self._look_at(
+            _np.array([self.get_pos_x(), self.get_pos_y(), self.get_pos_z()]),
+            _np.array([self.get_center_x(), self.get_center_y(), self.get_center_z()]),
+            _np.array([self.get_up_x(), self.get_up_y(), self.get_up_z()])
+        )
+
+    def get_pos_x(self):
+        """
+        Return x position.
+
+        :return:
+        :rtype: float, int
+        """
+        pass
+
+    def get_pos_y(self):
+        """
+        Return y position.
+
+        :return:
+        :rtype: float, int
+        """
+        pass
+
+    def get_pos_z(self):
+        """
+        Return z position.
+
+        :return:
+        :rtype: float, int
+        """
+        pass
+
+    def get_center_x(self):
+        """
+        Return center x position.
+
+        :return:
+        :rtype: float, int
+        """
+        pass
+
+    def get_center_y(self):
+        """
+        Return center y position.
+
+        :return:
+        :rtype: float, int
+        """
+        pass
+
+    def get_center_z(self):
+        """
+        Return center x position.
+
+        :return:
+        :rtype: float, int
+        """
+        pass
+
+    def get_up_x(self):
+        """
+        Return up vector x position.
+
+        :return:
+        :rtype: float, int
+        """
+        pass
+
+    def get_up_y(self):
+        """
+        Return up vector y position.
+
+        :return:
+        :rtype: float, int
+        """
+        pass
+
+    def get_up_z(self):
+        """
+        Return up vector z position.
+
+        :return:
+        :rtype: float, int
         """
         pass
 
@@ -213,6 +310,32 @@ class _Camera:
         """
         pass
 
+    @staticmethod
+    def _look_at(_eye, _at, _up):
+        """
+        Create look at matrix.
+
+        :param _eye:
+        :param _at:
+        :param _up:
+        :return:
+        """
+        forward = (_at - _eye)
+        forward /= _np.linalg.norm(forward)
+
+        side = _np.cross(forward, _up)
+        side /= _np.linalg.norm(side)
+
+        new_up = _np.cross(side, forward)
+        new_up /= _np.linalg.norm(new_up)
+
+        return _np.array([
+            [side[0], side[1], side[2], -_np.dot(side, _eye)],
+            [new_up[0], new_up[1], new_up[2], -_np.dot(new_up, _eye)],
+            [-forward[0], -forward[1], -forward[2], _np.dot(forward, _eye)],
+            [0, 0, 0, 1]
+        ], dtype=_np.float32)
+
 
 class CameraXYZ(_Camera):
     """
@@ -257,23 +380,12 @@ class CameraXYZ(_Camera):
                    self._center.get_z(), self._up.get_x(), self._up.get_y(),
                    self._up.get_z())
 
-    def get_view(self):
-        """
-        Get view matrix.
-
-        :return:
-        """
-        return _tr2.lookAt(
-            _np.array([self._pos.get_x(), self._pos.get_y(), self._pos.get_z()]),
-            _np.array([self._center.get_x(), self._center.get_y(), self._center.get_z()]),
-            _np.array([self._up.get_x(), self._up.get_y(), self._up.get_z()])
-        )
-
     def get_pos_x(self):
         """
         Return x position.
 
         :return:
+        :rtype: float, int
         """
         return self._pos.get_x()
 
@@ -282,6 +394,7 @@ class CameraXYZ(_Camera):
         Return y position.
 
         :return:
+        :rtype: float, int
         """
         return self._pos.get_y()
 
@@ -298,6 +411,7 @@ class CameraXYZ(_Camera):
         Return center x position.
 
         :return:
+        :rtype: float, int
         """
         return self._center.get_x()
 
@@ -306,6 +420,7 @@ class CameraXYZ(_Camera):
         Return center y position.
 
         :return:
+        :rtype: float, int
         """
         return self._center.get_y()
 
@@ -314,8 +429,36 @@ class CameraXYZ(_Camera):
         Return center x position.
 
         :return:
+        :rtype: float, int
         """
         return self._center.get_z()
+
+    def get_up_x(self):
+        """
+        Return up vector x position.
+
+        :return:
+        :rtype: float, int
+        """
+        return self._up.get_x()
+
+    def get_up_y(self):
+        """
+        Return up vector y position.
+
+        :return:
+        :rtype: float, int
+        """
+        return self._up.get_y()
+
+    def get_up_z(self):
+        """
+        Return up vector z position.
+
+        :return:
+        :rtype: float, int
+        """
+        return self._up.get_z()
 
     def move_x(self, direction=_CAMERA_POSITIVE):
         """
@@ -586,25 +729,12 @@ class CameraR(_Camera):
                    self._up.get_x(), self._up.get_y(),
                    self._up.get_z())
 
-    def get_view(self):
-        """
-        Get view matrix.
-
-        :return:
-        """
-        return _tr2.lookAt(
-            _np.array([self._r * _sin(self._theta) * _cos(self._phi),
-                       self._r * _sin(self._theta) * _sin(self._phi),
-                       self._r * _cos(self._theta)]),
-            _np.array([self._center.get_x(), self._center.get_y(), self._center.get_z()]),
-            _np.array([self._up.get_x(), self._up.get_y(), self._up.get_z()])
-        )
-
     def get_pos_x(self):
         """
         Return x position.
 
         :return:
+        :rtype: float, int
         """
         return self._r * _sin(self._theta) * _cos(self._phi)
 
@@ -613,6 +743,7 @@ class CameraR(_Camera):
         Return y position.
 
         :return:
+        :rtype: float, int
         """
         return self._r * _sin(self._theta) * _sin(self._phi)
 
@@ -621,6 +752,7 @@ class CameraR(_Camera):
         Return z position.
 
         :return:
+        :rtype: float, int
         """
         return self._r * _cos(self._theta)
 
@@ -629,6 +761,7 @@ class CameraR(_Camera):
         Return center x position.
 
         :return:
+        :rtype: float, int
         """
         return self._center.get_x()
 
@@ -637,6 +770,7 @@ class CameraR(_Camera):
         Return center y position.
 
         :return:
+        :rtype: float, int
         """
         return self._center.get_y()
 
@@ -645,8 +779,36 @@ class CameraR(_Camera):
         Return center x position.
 
         :return:
+        :rtype: float, int
         """
         return self._center.get_z()
+
+    def get_up_x(self):
+        """
+        Return up vector x position.
+
+        :return:
+        :rtype: float, int
+        """
+        return self._up.get_x()
+
+    def get_up_y(self):
+        """
+        Return up vector y position.
+
+        :return:
+        :rtype: float, int
+        """
+        return self._up.get_y()
+
+    def get_up_z(self):
+        """
+        Return up vector z position.
+
+        :return:
+        :rtype: float, int
+        """
+        return self._up.get_z()
 
     def __str__(self):
         """

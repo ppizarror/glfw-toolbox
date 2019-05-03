@@ -2,6 +2,9 @@
 """
 SETUP DISTRIBUTION
 
+GLFW-TOOLBOX
+Toolbox for GLFW Graphic Library.
+
 MIT License
 Copyright (c) 2019 Pablo Pizarro R.
 
@@ -28,7 +31,7 @@ SOFTWARE.
 from setuptools import setup
 from glfwToolbox.about import __author__, __description__, __email__, __url__, __version__
 
-with open('README.rst') as f:
+with open('README.md') as f:
     long_description = f.read()
 
 setup(
@@ -38,15 +41,15 @@ setup(
         'License :: OSI Approved :: MIT License',
         'Operating System :: OS Independent',
         'Programming Language :: Python',
-        'Topic :: Software Development :: Libraries :: pygame'
+        'Topic :: Software Development :: Libraries :: glfw'
     ],
     description=__description__,
     include_package_data=True,
-    install_requires=['numpy', 'Pillow', 'pygame', 'PyOpenGL'],
+    install_requires=['numpy', 'PyOpenGL', 'glfw', 'PIL'],
     license='MIT',
     long_description=long_description,
-    name='PyOpenGL-toolbox',
-    packages=['PyOpenGLtoolbox'],
+    name='glfw-toolbox',
+    packages=['glfwToolbox'],
     url=__url__,
     version=__version__
 )

@@ -1,8 +1,31 @@
 # coding=utf-8
 """
-Graficador, genera una superficie 3D que representa una función.
+EXAMPLE
+Creates a 3D plot using glfwToolbox
 
-@author ppizarror
+GLFW-TOOLBOX
+Toolbox for GLFW Graphic Library.
+
+MIT License
+Copyright (c) 2019 Pablo Pizarro R.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
 """
 
 # Library imports
@@ -11,14 +34,13 @@ from OpenGL.GL import *
 import sys
 import numpy as np
 
-import lib.transformations2 as tr2
-import lib.basic_shapes as bs
-import lib.easy_shaders as es
-import lib.camera as cam
-from lib.mathlib import Point3
-import lib.basic_shapes_extended as bs_ext
-import lib.lights as light
-from lib.colors import colorHSV
+import glfwToolbox.transformations as tr
+import glfwToolbox.shapes as shapes
+import glfwToolbox.easy_shaders as es
+import glfwToolbox.camera as cam
+from glfwToolbox.mathlib import Point3
+import glfwToolbox.lights as light
+from glfwToolbox.colors import colorHSV
 
 
 # A class to store the application control

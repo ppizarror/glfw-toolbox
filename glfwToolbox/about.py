@@ -24,3 +24,10 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 """
+
+# Metadata
+__author__ = 'Pablo Pizarro @ppizarror.com'
+__description__ = 'GLFW toolbox'
+__email__ = 'pablo.pizarro@ing.uchile.cl'
+__version__ = '1.0.0'
+__url__ = 'https://github.com/ppizarror/glfw-toolbox'
