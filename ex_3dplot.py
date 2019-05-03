@@ -1,7 +1,7 @@
 # coding=utf-8
 """
 EXAMPLE
-Creates a 3D plot using glfwToolbox
+Creates a 3D plot using glfwToolbox.
 
 GLFW-TOOLBOX
 Toolbox for GLFW Graphic Library.
@@ -34,13 +34,15 @@ from OpenGL.GL import *
 import sys
 import numpy as np
 
-import glfwToolbox.transformations as tr
-import glfwToolbox.shapes as shapes
-import glfwToolbox.easy_shaders as es
-import glfwToolbox.camera as cam
-from glfwToolbox.mathlib import Point3
-import glfwToolbox.lights as light
+from glfwToolbox.advanced_shapes import AdvancedGPUShape
 from glfwToolbox.colors import colorHSV
+from glfwToolbox.mathlib import Point3
+from glfwToolbox.opengl import clear_buffer
+import glfwToolbox.camera as cam
+import glfwToolbox.easy_shaders as es
+import glfwToolbox.lights as light
+import glfwToolbox.shapes as shapes
+import glfwToolbox.transformations as tr
 
 
 # A class to store the application control
@@ -53,7 +55,7 @@ class Controller:
 controller = Controller()
 
 # Create camera
-camera = cam.CameraR(r=3.5, center=Point3())
+camera = cam.CameraR(r=3.5, center=Point3(0, 0, 0))
 camera.set_r_vel(0.1)
 
 
@@ -100,35 +102,35 @@ def on_key(window_obj, key, scancode, action, mods):
         sys.exit()
 
 
-def f(x, y, fun):
+def f(_x, _y, _fun):
     """
     Function that returns the value of z for each vertex.
     z = f(x,y)
 
-    :param x:
-    :param y:
-    :param fun: Function number
+    :param _x:
+    :param _y:
+    :param _fun: Function number
     :return:
     """
-    if fun == 0:
-        return x * y
-    elif fun == 1:  # Bumps
-        return np.sin(5 * x) * np.cos(5 * y) / 5
-    elif fun == 2:  # Pyramid
-        return 1 - abs(x + y) - abs(y - x)
-    elif fun == 3:  # Hills
-        return 0.2 * (3 * np.exp(-(y + 1) ** 2 - x ** 2) * (x - 1) ** 2 - (-(x + 1) ** 2 - y ** 2)
-                      / 3 + np.exp(-x ** 2 - y ** 2) * (10 * x ** 3 - 2 * x + 10 * y ** 5))
-    elif fun == 4:  # Mantle
-        return np.sin(10 * (x ** 2 + y ** 2)) / 10
-    elif fun == 5:  # Intersecting fences
-        return 0.75 / np.exp((x * 5) ** 2 * (y * 5) ** 2)
-    elif fun == 6:  # Letter A
-        return ((1 - np.sign(-x - 0.9 + abs(y * 2))) / 3 * (np.sign(0.9 - x) + 1) / 3) * \
-               (np.sign(x + 0.65) + 1) / 2 - (
-                       (1 - np.sign(-x - 0.39 + abs(y * 2))) / 3 * (np.sign(0.9 - x) + 1) / 3) + (
-                       (1 - np.sign(-x - 0.39 + abs(y * 2))) / 3 * (np.sign(0.6 - x) + 1) / 3) * (
-                       np.sign(x - 0.35) + 1) / 2
+    if _fun == 0:
+        return _x * _y
+    elif _fun == 1:  # Bumps
+        return np.sin(5 * _x) * np.cos(5 * _y) / 5
+    elif _fun == 2:  # Pyramid
+        return 1 - abs(_x + _y) - abs(_y - _x)
+    elif _fun == 3:  # Hills
+        return 0.2 * (3 * np.exp(-(_y + 1) ** 2 - _x ** 2) * (_x - 1) ** 2 - (-(_x + 1) ** 2 - _y ** 2)
+                      / 3 + np.exp(-_x ** 2 - _y ** 2) * (10 * _x ** 3 - 2 * _x + 10 * _y ** 5))
+    elif _fun == 4:  # Mantle
+        return np.sin(10 * (_x ** 2 + _y ** 2)) / 10
+    elif _fun == 5:  # Intersecting fences
+        return 0.75 / np.exp((_x * 5) ** 2 * (_y * 5) ** 2)
+    elif _fun == 6:  # Letter A
+        return ((1 - np.sign(-_x - 0.9 + abs(_y * 2))) / 3 * (np.sign(0.9 - _x) + 1) / 3) * \
+               (np.sign(_x + 0.65) + 1) / 2 - (
+                       (1 - np.sign(-_x - 0.39 + abs(_y * 2))) / 3 * (np.sign(0.9 - _x) + 1) / 3) + (
+                       (1 - np.sign(-_x - 0.39 + abs(_y * 2))) / 3 * (np.sign(0.6 - _x) + 1) / 3) * (
+                       np.sign(_x - 0.35) + 1) / 2
     else:
         return 0
 
@@ -165,8 +167,8 @@ if __name__ == '__main__':
     glEnable(GL_DEPTH_TEST)
 
     # Create models
-    gpuAxis = es.toGPUShape(bs.createAxis(1))
-    obj_axis = bs_ext.AdvancedGPUShape(gpuAxis, shader=colorShaderProgram)
+    gpuAxis = es.toGPUShape(shapes.createAxis(1))
+    obj_axis = AdvancedGPUShape(gpuAxis, shader=colorShaderProgram)
 
     # Create the grid of the system
     vertex_grid = []
@@ -225,14 +227,18 @@ if __name__ == '__main__':
                 color = color_plot['color']
 
             # Create the figure
-            quad_shapes.append(es.toGPUShape(bs_ext.create4VertexColorNormal(pa, pb, pc, pd,
+            quad_shapes.append(es.toGPUShape(shapes.create4VertexColorNormal(pa, pb, pc, pd,
                                                                              color[0], color[1], color[2])))
 
     # Create main object
-    obj_main = bs_ext.AdvancedGPUShape(quad_shapes, shader=phongPipeline)
+    obj_main = AdvancedGPUShape(quad_shapes, shader=phongPipeline)
 
     # Create light
     obj_light = light.Light(phongPipeline, [0, 0, 6], [1, 1, 1])
+
+    # Create projection
+    # projection = tr.ortho(-1, 1, -1, 1, 0.1, 100)
+    projection = tr.perspective(45, float(width) / float(height), 0.1, 100)
 
     # Main loop
     while not glfw.window_should_close(window):
@@ -246,11 +252,7 @@ if __name__ == '__main__':
             glPolygonMode(GL_FRONT_AND_BACK, GL_LINE)
 
         # Clearing the screen in both, color and depth
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
-
-        # Create projection
-        # projection = tr2.ortho(-1, 1, -1, 1, 0.1, 100)
-        projection = tr2.perspective(45, float(width) / float(height), 0.1, 100)
+        clear_buffer()
 
         # Get camera view matrix
         view = camera.get_view()

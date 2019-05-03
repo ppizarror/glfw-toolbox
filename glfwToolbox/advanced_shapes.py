@@ -162,7 +162,7 @@ class AdvancedGPUShape(object):
         self._modelPrev = self._model
         self._model = _tr.matmul([t, self._model])
 
-    def draw(self, view, projection, mode=_GL_TRIANGLES, shader=None, usemodel=True):
+    def draw(self, view=None, projection=None, mode=_GL_TRIANGLES, shader=None, usemodel=True):
         """
         Draw model.
 
@@ -182,10 +182,13 @@ class AdvancedGPUShape(object):
                 raise Exception('MergedShape shader is not set')
             shader = self._shader
         _glUseProgram(shader.shaderProgram)
-        if usemodel:
-            _glUniformMatrix4fv(_glGetUniformLocation(shader.shaderProgram, 'model'), 1, _GL_TRUE, self._model)
-        _glUniformMatrix4fv(_glGetUniformLocation(shader.shaderProgram, 'projection'), 1, _GL_TRUE, projection)
-        _glUniformMatrix4fv(_glGetUniformLocation(shader.shaderProgram, 'view'), 1, _GL_TRUE, view)
+        if usemodel and shader.keyModel != '':
+            _glUniformMatrix4fv(_glGetUniformLocation(shader.shaderProgram, shader.keyModel), 1, _GL_TRUE, self._model)
+        if projection is not None and shader.keyProjection != '':
+            _glUniformMatrix4fv(_glGetUniformLocation(shader.shaderProgram, shader.keyProjection), 1, _GL_TRUE,
+                                projection)
+        if view is not None and shader.keyView != '':
+            _glUniformMatrix4fv(_glGetUniformLocation(shader.shaderProgram, shader.keyView), 1, _GL_TRUE, view)
         for i in self._shapes:
             shader.drawShape(i, mode)
         if self._modelPrev is not None:

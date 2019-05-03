@@ -1,8 +1,31 @@
 # coding=utf-8
 """
-Crea un cilindro en 3D.
+EXAMPLE
+3D Cylinder.
 
-@author ppizarror
+GLFW-TOOLBOX
+Toolbox for GLFW Graphic Library.
+
+MIT License
+Copyright (c) 2019 Pablo Pizarro R.
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
 """
 
 # Library imports
@@ -10,18 +33,14 @@ import glfw
 from OpenGL.GL import *
 import sys
 
-import lib.transformations2 as tr2
-import lib.basic_shapes as bs
-import lib.easy_shaders as es
-import lib.camera as cam
-from lib.mathlib import Point3
+from glfwToolbox.advanced_shapes import AdvancedGPUShape
+from glfwToolbox.mathlib import Point3
+import glfwToolbox.camera as cam
+import glfwToolbox.easy_shaders as es
+import glfwToolbox.lights as light
+import glfwToolbox.shapes as shapes
+import glfwToolbox.transformations as tr
 import numpy as np
-
-# Import extended shapes
-import lib.basic_shapes_extended as bs_ext
-
-# Import lights
-import lib.lights as light
 
 
 # A class to store the application control
@@ -117,7 +136,7 @@ if __name__ == '__main__':
     glEnable(GL_DEPTH_TEST)
 
     # Create models
-    gpuAxis = es.toGPUShape(bs.createAxis(1))
+    gpuAxis = es.toGPUShape(shapes.createAxis(1))
     obj_axis = bs_ext.AdvancedGPUShape(gpuAxis, shader=colorShaderProgram)
 
     # Create cilynder, the objective is create many cuads from the bottom, top and
@@ -204,7 +223,7 @@ if __name__ == '__main__':
 
         # Create projection
         # projection = tr2.ortho(-1, 1, -1, 1, 0.1, 100)
-        projection = tr2.perspective(45, float(width) / float(height), 0.1, 100)
+        projection = tr.perspective(45, float(width) / float(height), 0.1, 100)
 
         # Get camera view matrix
         view = camera.get_view()

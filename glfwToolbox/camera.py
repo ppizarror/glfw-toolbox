@@ -31,10 +31,9 @@ SOFTWARE.
 # Library imports
 from OpenGL.GL import glLoadIdentity as _glLoadIdentity
 from OpenGL.GLU import gluLookAt as _gluLookAt
-# noinspection PyProtectedMember
-from PyOpenGLtoolbox.mathlib import _cos, _sin, _xyz_to_spr, _spr_to_xyz
-from PyOpenGLtoolbox.mathlib import Point3 as _Point3
-from PyOpenGLtoolbox.mathlib import Vector3 as _Vector3
+from glfwToolbox.mathlib import _cos, _sin, _xyz_to_spr, _spr_to_xyz
+from glfwToolbox.mathlib import Point3 as _Point3
+from glfwToolbox.mathlib import Vector3 as _Vector3
 import math as _math
 import numpy as _np
 
@@ -703,7 +702,7 @@ class CameraR(_Camera):
             else:
                 raise Exception('up_vector must be Vector3 type')
         else:
-            raise Exception('center_point must be Point3 type')
+            raise Exception('center must be Point3 type')
 
     def set_r_vel(self, vel):
         """

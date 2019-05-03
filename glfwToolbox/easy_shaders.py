@@ -10,7 +10,7 @@ MIT License
 Copyright (c) 2019 Pablo Pizarro R.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
+of this software and associated documentation files (the 'Software'), to deal
 in the Software without restriction, including without limitation the rights
 to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 copies of the Software, and to permit persons to whom the Software is
@@ -19,7 +19,7 @@ furnished to do so, subject to the following conditions:
 The above copyright notice and this permission notice shall be included in all
 copies or substantial portions of the Software.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
 AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
@@ -50,34 +50,34 @@ class GPUShape:
         self.size = 0
 
 
-def textureSimpleSetup(texture, imgName, wrapMode, filterMode):
-    # wrapMode: GL_REPEAT, GL_CLAMP_TO_EDGE
-    # filterMode: GL_LINEAR, GL_NEAREST
+def textureSimpleSetup(texture, img_name, wrap_mode, filter_mode):
+    # wrap_mode: GL_REPEAT, GL_CLAMP_TO_EDGE
+    # filter_mode: GL_LINEAR, GL_NEAREST
 
     glBindTexture(GL_TEXTURE_2D, texture)
 
     # texture wrapping params
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrapMode)
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrapMode)
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, wrap_mode)
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, wrap_mode)
 
     # texture filtering params
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filterMode)
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filterMode)
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, filter_mode)
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, filter_mode)
 
-    image = Image.open(imgName)
+    image = Image.open(img_name)
     img_data = np.array(list(image.getdata()), np.uint8)
 
     # The image data is read with the rows reverted, this is fixed here.
     img_data = img_data[-1:0:-1, :]
 
-    if image.mode == "RGB":
+    if image.mode == 'RGB':
         internalFormat = GL_RGB
         formatf = GL_RGB
-    elif image.mode == "RGBA":
+    elif image.mode == 'RGBA':
         internalFormat = GL_RGBA
         formatf = GL_RGBA
     else:
-        print("Image mode not supported.")
+        print('Image mode not supported.')
         raise Exception()
 
     glTexImage2D(GL_TEXTURE_2D, 0, internalFormat, image.size[0], image.size[1], 0, formatf, GL_UNSIGNED_BYTE, img_data)
@@ -142,6 +142,12 @@ class SimpleShaderProgram:
             }
             """
 
+        self.keyView = ''
+        self.keyPosition = 'position'
+        self.keyModel = ''
+        self.keyColor = 'color'
+        self.keyTexture = ''
+        self.keyProjection = ''
         self.shaderProgram = OpenGL.GL.shaders.compileProgram(
             OpenGL.GL.shaders.compileShader(vertex_shader, GL_VERTEX_SHADER),
             OpenGL.GL.shaders.compileShader(fragment_shader, GL_FRAGMENT_SHADER))
@@ -155,11 +161,11 @@ class SimpleShaderProgram:
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, shape.ebo)
 
         # 3d vertices + rgb color specification => 3*4 + 3*4 = 24 bytes
-        position = glGetAttribLocation(self.shaderProgram, "position")
+        position = glGetAttribLocation(self.shaderProgram, 'position')
         glVertexAttribPointer(position, 3, GL_FLOAT, GL_FALSE, 24, ctypes.c_void_p(0))
         glEnableVertexAttribArray(position)
 
-        color = glGetAttribLocation(self.shaderProgram, "color")
+        color = glGetAttribLocation(self.shaderProgram, 'color')
         glVertexAttribPointer(color, 3, GL_FLOAT, GL_FALSE, 24, ctypes.c_void_p(12))
         glEnableVertexAttribArray(color)
 
@@ -200,6 +206,12 @@ class SimpleTextureShaderProgram:
             }
             """
 
+        self.keyView = ''
+        self.keyPosition = 'position'
+        self.keyModel = ''
+        self.keyColor = ''
+        self.keyTexture = 'texCoords'
+        self.keyProjection = ''
         self.shaderProgram = OpenGL.GL.shaders.compileProgram(
             OpenGL.GL.shaders.compileShader(vertex_shader, GL_VERTEX_SHADER),
             OpenGL.GL.shaders.compileShader(fragment_shader, GL_FRAGMENT_SHADER))
@@ -214,11 +226,11 @@ class SimpleTextureShaderProgram:
         glBindTexture(GL_TEXTURE_2D, shape.texture)
 
         # 3d vertices + 2d texture coordinates => 3*4 + 2*4 = 20 bytes
-        position = glGetAttribLocation(self.shaderProgram, "position")
+        position = glGetAttribLocation(self.shaderProgram, 'position')
         glVertexAttribPointer(position, 3, GL_FLOAT, GL_FALSE, 20, ctypes.c_void_p(0))
         glEnableVertexAttribArray(position)
 
-        texCoords = glGetAttribLocation(self.shaderProgram, "texCoords")
+        texCoords = glGetAttribLocation(self.shaderProgram, 'texCoords')
         glVertexAttribPointer(texCoords, 2, GL_FLOAT, GL_FALSE, 20, ctypes.c_void_p(12))
         glEnableVertexAttribArray(texCoords)
 
@@ -258,6 +270,12 @@ class SimpleTransformShaderProgram:
             }
             """
 
+        self.keyView = ''
+        self.keyPosition = 'position'
+        self.keyModel = 'transform'
+        self.keyColor = 'color'
+        self.keyTexture = ''
+        self.keyProjection = ''
         self.shaderProgram = OpenGL.GL.shaders.compileProgram(
             OpenGL.GL.shaders.compileShader(vertex_shader, OpenGL.GL.GL_VERTEX_SHADER),
             OpenGL.GL.shaders.compileShader(fragment_shader, OpenGL.GL.GL_FRAGMENT_SHADER))
@@ -271,11 +289,11 @@ class SimpleTransformShaderProgram:
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, shape.ebo)
 
         # 3d vertices + rgb color specification => 3*4 + 3*4 = 24 bytes
-        position = glGetAttribLocation(self.shaderProgram, "position")
+        position = glGetAttribLocation(self.shaderProgram, 'position')
         glVertexAttribPointer(position, 3, GL_FLOAT, GL_FALSE, 24, ctypes.c_void_p(0))
         glEnableVertexAttribArray(position)
 
-        color = glGetAttribLocation(self.shaderProgram, "color")
+        color = glGetAttribLocation(self.shaderProgram, 'color')
         glVertexAttribPointer(color, 3, GL_FLOAT, GL_FALSE, 24, ctypes.c_void_p(12))
         glEnableVertexAttribArray(color)
 
@@ -318,6 +336,12 @@ class SimpleTextureTransformShaderProgram:
             }
             """
 
+        self.keyView = ''
+        self.keyPosition = 'position'
+        self.keyModel = 'transform'
+        self.keyColor = ''
+        self.keyTexture = 'texCoords'
+        self.keyProjection = ''
         self.shaderProgram = OpenGL.GL.shaders.compileProgram(
             OpenGL.GL.shaders.compileShader(vertex_shader, GL_VERTEX_SHADER),
             OpenGL.GL.shaders.compileShader(fragment_shader, GL_FRAGMENT_SHADER))
@@ -332,11 +356,11 @@ class SimpleTextureTransformShaderProgram:
         glBindTexture(GL_TEXTURE_2D, shape.texture)
 
         # 3d vertices + 2d texture coordinates => 3*4 + 2*4 = 20 bytes
-        position = glGetAttribLocation(self.shaderProgram, "position")
+        position = glGetAttribLocation(self.shaderProgram, 'position')
         glVertexAttribPointer(position, 3, GL_FLOAT, GL_FALSE, 20, ctypes.c_void_p(0))
         glEnableVertexAttribArray(position)
 
-        texCoords = glGetAttribLocation(self.shaderProgram, "texCoords")
+        texCoords = glGetAttribLocation(self.shaderProgram, 'texCoords')
         glVertexAttribPointer(texCoords, 2, GL_FLOAT, GL_FALSE, 20, ctypes.c_void_p(12))
         glEnableVertexAttribArray(texCoords)
 
@@ -376,6 +400,12 @@ class SimpleModelViewProjectionShaderProgram:
             }
             """
 
+        self.keyView = 'view'
+        self.keyPosition = 'position'
+        self.keyModel = 'model'
+        self.keyColor = 'color'
+        self.keyTexture = ''
+        self.keyProjection = 'projection'
         self.shaderProgram = OpenGL.GL.shaders.compileProgram(
             OpenGL.GL.shaders.compileShader(vertex_shader, OpenGL.GL.GL_VERTEX_SHADER),
             OpenGL.GL.shaders.compileShader(fragment_shader, OpenGL.GL.GL_FRAGMENT_SHADER))
@@ -389,11 +419,11 @@ class SimpleModelViewProjectionShaderProgram:
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, shape.ebo)
 
         # 3d vertices + rgb color specification => 3*4 + 3*4 = 24 bytes
-        position = glGetAttribLocation(self.shaderProgram, "position")
+        position = glGetAttribLocation(self.shaderProgram, 'position')
         glVertexAttribPointer(position, 3, GL_FLOAT, GL_FALSE, 24, ctypes.c_void_p(0))
         glEnableVertexAttribArray(position)
 
-        color = glGetAttribLocation(self.shaderProgram, "color")
+        color = glGetAttribLocation(self.shaderProgram, 'color')
         glVertexAttribPointer(color, 3, GL_FLOAT, GL_FALSE, 24, ctypes.c_void_p(12))
         glEnableVertexAttribArray(color)
 
@@ -438,6 +468,12 @@ class SimpleTextureModelViewProjectionShaderProgram:
             }
             """
 
+        self.keyView = 'view'
+        self.keyPosition = 'position'
+        self.keyModel = 'model'
+        self.keyColor = ''
+        self.keyTexture = 'texCoords'
+        self.keyProjection = 'projection'
         self.shaderProgram = OpenGL.GL.shaders.compileProgram(
             OpenGL.GL.shaders.compileShader(vertex_shader, OpenGL.GL.GL_VERTEX_SHADER),
             OpenGL.GL.shaders.compileShader(fragment_shader, OpenGL.GL.GL_FRAGMENT_SHADER))
@@ -452,11 +488,11 @@ class SimpleTextureModelViewProjectionShaderProgram:
         glBindTexture(GL_TEXTURE_2D, shape.texture)
 
         # 3d vertices + 2d texture coordinates => 3*4 + 2*4 = 20 bytes
-        position = glGetAttribLocation(self.shaderProgram, "position")
+        position = glGetAttribLocation(self.shaderProgram, 'position')
         glVertexAttribPointer(position, 3, GL_FLOAT, GL_FALSE, 20, ctypes.c_void_p(0))
         glEnableVertexAttribArray(position)
 
-        texCoords = glGetAttribLocation(self.shaderProgram, "texCoords")
+        texCoords = glGetAttribLocation(self.shaderProgram, 'texCoords')
         glVertexAttribPointer(texCoords, 2, GL_FLOAT, GL_FALSE, 20, ctypes.c_void_p(12))
         glEnableVertexAttribArray(texCoords)
 
@@ -532,6 +568,12 @@ class SimpleFlatShaderProgram:
             }
             """
 
+        self.keyView = 'view'
+        self.keyPosition = ''
+        self.keyModel = 'model'
+        self.keyColor = ''
+        self.keyTexture = ''
+        self.keyProjection = 'projection'
         self.shaderProgram = OpenGL.GL.shaders.compileProgram(
             OpenGL.GL.shaders.compileShader(vertex_shader, OpenGL.GL.GL_VERTEX_SHADER),
             OpenGL.GL.shaders.compileShader(fragment_shader, OpenGL.GL.GL_FRAGMENT_SHADER))
@@ -545,15 +587,15 @@ class SimpleFlatShaderProgram:
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, shape.ebo)
 
         # 3d vertices + rgb color + 3d normals => 3*4 + 3*4 + 3*4 = 36 bytes
-        position = glGetAttribLocation(self.shaderProgram, "aPos")
+        position = glGetAttribLocation(self.shaderProgram, 'aPos')
         glVertexAttribPointer(position, 3, GL_FLOAT, GL_FALSE, 36, ctypes.c_void_p(0))
         glEnableVertexAttribArray(position)
 
-        color = glGetAttribLocation(self.shaderProgram, "aColor")
+        color = glGetAttribLocation(self.shaderProgram, 'aColor')
         glVertexAttribPointer(color, 3, GL_FLOAT, GL_FALSE, 36, ctypes.c_void_p(12))
         glEnableVertexAttribArray(color)
 
-        normal = glGetAttribLocation(self.shaderProgram, "aNormal")
+        normal = glGetAttribLocation(self.shaderProgram, 'aNormal')
         glVertexAttribPointer(normal, 3, GL_FLOAT, GL_FALSE, 36, ctypes.c_void_p(24))
         glEnableVertexAttribArray(normal)
 
@@ -639,6 +681,12 @@ class SimpleTextureFlatShaderProgram:
             }
             """
 
+        self.keyView = 'view'
+        self.keyPosition = ''
+        self.keyModel = 'model'
+        self.keyColor = ''
+        self.keyTexture = ''
+        self.keyProjection = 'projection'
         self.shaderProgram = OpenGL.GL.shaders.compileProgram(
             OpenGL.GL.shaders.compileShader(vertex_shader, OpenGL.GL.GL_VERTEX_SHADER),
             OpenGL.GL.shaders.compileShader(fragment_shader, OpenGL.GL.GL_FRAGMENT_SHADER))
@@ -652,15 +700,15 @@ class SimpleTextureFlatShaderProgram:
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, shape.ebo)
 
         # 3d vertices + rgb color + 3d normals => 3*4 + 3*4 + 3*4 = 36 bytes
-        position = glGetAttribLocation(self.shaderProgram, "aPos")
+        position = glGetAttribLocation(self.shaderProgram, 'aPos')
         glVertexAttribPointer(position, 3, GL_FLOAT, GL_FALSE, 32, ctypes.c_void_p(0))
         glEnableVertexAttribArray(position)
 
-        color = glGetAttribLocation(self.shaderProgram, "texCoords")
+        color = glGetAttribLocation(self.shaderProgram, 'texCoords')
         glVertexAttribPointer(color, 2, GL_FLOAT, GL_FALSE, 32, ctypes.c_void_p(12))
         glEnableVertexAttribArray(color)
 
-        normal = glGetAttribLocation(self.shaderProgram, "aNormal")
+        normal = glGetAttribLocation(self.shaderProgram, 'aNormal')
         glVertexAttribPointer(normal, 3, GL_FLOAT, GL_FALSE, 32, ctypes.c_void_p(20))
         glEnableVertexAttribArray(normal)
 
@@ -738,6 +786,12 @@ class SimpleGouraudShaderProgram:
             }
             """
 
+        self.keyView = 'view'
+        self.keyPosition = ''
+        self.keyModel = 'model'
+        self.keyColor = ''
+        self.keyTexture = ''
+        self.keyProjection = 'projection'
         self.shaderProgram = OpenGL.GL.shaders.compileProgram(
             OpenGL.GL.shaders.compileShader(vertex_shader, OpenGL.GL.GL_VERTEX_SHADER),
             OpenGL.GL.shaders.compileShader(fragment_shader, OpenGL.GL.GL_FRAGMENT_SHADER))
@@ -751,15 +805,15 @@ class SimpleGouraudShaderProgram:
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, shape.ebo)
 
         # 3d vertices + rgb color + 3d normals => 3*4 + 3*4 + 3*4 = 36 bytes
-        position = glGetAttribLocation(self.shaderProgram, "aPos")
+        position = glGetAttribLocation(self.shaderProgram, 'aPos')
         glVertexAttribPointer(position, 3, GL_FLOAT, GL_FALSE, 36, ctypes.c_void_p(0))
         glEnableVertexAttribArray(position)
 
-        color = glGetAttribLocation(self.shaderProgram, "aColor")
+        color = glGetAttribLocation(self.shaderProgram, 'aColor')
         glVertexAttribPointer(color, 3, GL_FLOAT, GL_FALSE, 36, ctypes.c_void_p(12))
         glEnableVertexAttribArray(color)
 
-        normal = glGetAttribLocation(self.shaderProgram, "aNormal")
+        normal = glGetAttribLocation(self.shaderProgram, 'aNormal')
         glVertexAttribPointer(normal, 3, GL_FLOAT, GL_FALSE, 36, ctypes.c_void_p(24))
         glEnableVertexAttribArray(normal)
 
@@ -845,6 +899,12 @@ class SimpleTextureGouraudShaderProgram:
             }
             """
 
+        self.keyView = 'view'
+        self.keyPosition = ''
+        self.keyModel = 'model'
+        self.keyColor = ''
+        self.keyTexture = ''
+        self.keyProjection = 'projection'
         self.shaderProgram = OpenGL.GL.shaders.compileProgram(
             OpenGL.GL.shaders.compileShader(vertex_shader, OpenGL.GL.GL_VERTEX_SHADER),
             OpenGL.GL.shaders.compileShader(fragment_shader, OpenGL.GL.GL_FRAGMENT_SHADER))
@@ -858,15 +918,15 @@ class SimpleTextureGouraudShaderProgram:
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, shape.ebo)
 
         # 3d vertices + rgb color + 3d normals => 3*4 + 3*4 + 3*4 = 36 bytes
-        position = glGetAttribLocation(self.shaderProgram, "aPos")
+        position = glGetAttribLocation(self.shaderProgram, 'aPos')
         glVertexAttribPointer(position, 3, GL_FLOAT, GL_FALSE, 32, ctypes.c_void_p(0))
         glEnableVertexAttribArray(position)
 
-        color = glGetAttribLocation(self.shaderProgram, "texCoords")
+        color = glGetAttribLocation(self.shaderProgram, 'texCoords')
         glVertexAttribPointer(color, 2, GL_FLOAT, GL_FALSE, 32, ctypes.c_void_p(12))
         glEnableVertexAttribArray(color)
 
-        normal = glGetAttribLocation(self.shaderProgram, "aNormal")
+        normal = glGetAttribLocation(self.shaderProgram, 'aNormal')
         glVertexAttribPointer(normal, 3, GL_FLOAT, GL_FALSE, 32, ctypes.c_void_p(20))
         glEnableVertexAttribArray(normal)
 
@@ -950,6 +1010,12 @@ class SimplePhongShaderProgram:
             }
             """
 
+        self.keyView = 'view'
+        self.keyPosition = ''
+        self.keyModel = 'model'
+        self.keyColor = ''
+        self.keyTexture = ''
+        self.keyProjection = 'projection'
         self.shaderProgram = OpenGL.GL.shaders.compileProgram(
             OpenGL.GL.shaders.compileShader(vertex_shader, OpenGL.GL.GL_VERTEX_SHADER),
             OpenGL.GL.shaders.compileShader(fragment_shader, OpenGL.GL.GL_FRAGMENT_SHADER))
@@ -963,15 +1029,15 @@ class SimplePhongShaderProgram:
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, shape.ebo)
 
         # 3d vertices + rgb color + 3d normals => 3*4 + 3*4 + 3*4 = 36 bytes
-        position = glGetAttribLocation(self.shaderProgram, "aPos")
+        position = glGetAttribLocation(self.shaderProgram, 'aPos')
         glVertexAttribPointer(position, 3, GL_FLOAT, GL_FALSE, 36, ctypes.c_void_p(0))
         glEnableVertexAttribArray(position)
 
-        color = glGetAttribLocation(self.shaderProgram, "aColor")
+        color = glGetAttribLocation(self.shaderProgram, 'aColor')
         glVertexAttribPointer(color, 3, GL_FLOAT, GL_FALSE, 36, ctypes.c_void_p(12))
         glEnableVertexAttribArray(color)
 
-        normal = glGetAttribLocation(self.shaderProgram, "aNormal")
+        normal = glGetAttribLocation(self.shaderProgram, 'aNormal')
         glVertexAttribPointer(normal, 3, GL_FLOAT, GL_FALSE, 36, ctypes.c_void_p(24))
         glEnableVertexAttribArray(normal)
 
@@ -1059,6 +1125,12 @@ class SimpleTexturePhongShaderProgram:
             }
             """
 
+        self.keyView = 'view'
+        self.keyPosition = ''
+        self.keyModel = 'model'
+        self.keyColor = ''
+        self.keyTexture = 'texCoords'
+        self.keyProjection = 'projection'
         self.shaderProgram = OpenGL.GL.shaders.compileProgram(
             OpenGL.GL.shaders.compileShader(vertex_shader, OpenGL.GL.GL_VERTEX_SHADER),
             OpenGL.GL.shaders.compileShader(fragment_shader, OpenGL.GL.GL_FRAGMENT_SHADER))
@@ -1072,15 +1144,15 @@ class SimpleTexturePhongShaderProgram:
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, shape.ebo)
 
         # 3d vertices + 2d texture coordinates + 3d normals => 3*4 + 2*4 + 3*4 = 32 bytes
-        position = glGetAttribLocation(self.shaderProgram, "aPos")
+        position = glGetAttribLocation(self.shaderProgram, 'aPos')
         glVertexAttribPointer(position, 3, GL_FLOAT, GL_FALSE, 32, ctypes.c_void_p(0))
         glEnableVertexAttribArray(position)
 
-        texCoords = glGetAttribLocation(self.shaderProgram, "texCoords")
-        glVertexAttribPointer(texCoords, 2, GL_FLOAT, GL_FALSE, 32, ctypes.c_void_p(12))
-        glEnableVertexAttribArray(texCoords)
+        tex_coords = glGetAttribLocation(self.shaderProgram, 'tex_coords')
+        glVertexAttribPointer(tex_coords, 2, GL_FLOAT, GL_FALSE, 32, ctypes.c_void_p(12))
+        glEnableVertexAttribArray(tex_coords)
 
-        normal = glGetAttribLocation(self.shaderProgram, "aNormal")
+        normal = glGetAttribLocation(self.shaderProgram, 'aNormal')
         glVertexAttribPointer(normal, 3, GL_FLOAT, GL_FALSE, 32, ctypes.c_void_p(20))
         glEnableVertexAttribArray(normal)
 

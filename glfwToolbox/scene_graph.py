@@ -9,8 +9,9 @@ from OpenGL.GL import *
 import OpenGL.GL.shaders
 import numpy as np
 
-import transformations2 as tr2
-import easy_shaders as es
+import glfwToolbox.transformations as _tr
+import glfwToolbox.transformations as _es
+from glfwToolbox.easy_shaders import GPUShape as _GPUShape
 
 
 # A simple class to handle a scene graph
@@ -20,20 +21,19 @@ import easy_shaders as es
 class SceneGraphNode:
     def __init__(self, name):
         self.name = name
-        self.transform = tr2.identity()
+        self.transform = _tr.identity()
         self.childs = []
 
-    
-def findNode(node, name):
 
+def findNode(node, name):
     # The name was not found in this path
-    if isinstance(node, es.GPUShape):
+    if isinstance(node, _es.GPUShape):
         return None
 
     # This is the requested node
     if node.name == name:
         return node
-    
+
     # All childs are checked for the requested name
     else:
         for child in node.childs:
@@ -45,10 +45,9 @@ def findNode(node, name):
     return None
 
 
-def findTransform(node, name, parentTransform=tr2.identity()):
-
+def findTransform(node, name, parentTransform=_tr.identity()):
     # The name was not found in this path
-    if isinstance(node, es.GPUShape):
+    if isinstance(node, _GPUShape):
         return None
 
     newTransform = np.matmul(parentTransform, node.transform)
@@ -56,38 +55,38 @@ def findTransform(node, name, parentTransform=tr2.identity()):
     # This is the requested node
     if node.name == name:
         return newTransform
-    
+
     # All childs are checked for the requested name
     else:
         for child in node.childs:
             foundTransform = findTransform(child, name, newTransform)
-            if isinstance(foundTransform, (np.ndarray, np.generic) ):
+            if isinstance(foundTransform, (np.ndarray, np.generic)):
                 return foundTransform
 
     # No child of this node had the requested name
     return None
 
 
-def findPosition(node, name, parentTransform=tr2.identity()):
+def findPosition(node, name, parentTransform=_tr.identity()):
     foundTransform = findTransform(node, name, parentTransform)
 
-    if isinstance(foundTransform, (np.ndarray, np.generic) ):
-        zero = np.array([[0,0,0,1]], dtype=np.float32).T
+    if isinstance(foundTransform, (np.ndarray, np.generic)):
+        zero = np.array([[0, 0, 0, 1]], dtype=np.float32).T
         foundPosition = np.matmul(foundTransform, zero)
         return foundPosition
 
     return None
 
 
-def drawSceneGraphNode(node, pipeline, parentTransform=tr2.identity()):
-    assert(isinstance(node, SceneGraphNode))
+def drawSceneGraphNode(node, pipeline, parentTransform=_tr.identity()):
+    assert (isinstance(node, SceneGraphNode))
 
     # Composing the transformations through this path
     newTransform = np.matmul(parentTransform, node.transform)
 
     # If the child node is a leaf, it should be a GPUShape.
     # Hence, it can be drawn with drawShape
-    if len(node.childs) == 1 and isinstance(node.childs[0], es.GPUShape):
+    if len(node.childs) == 1 and isinstance(node.childs[0], _GPUShape):
         leaf = node.childs[0]
         glUniformMatrix4fv(glGetUniformLocation(pipeline.shaderProgram, "model"), 1, GL_TRUE, newTransform)
         pipeline.drawShape(leaf)
@@ -97,4 +96,3 @@ def drawSceneGraphNode(node, pipeline, parentTransform=tr2.identity()):
     else:
         for child in node.childs:
             drawSceneGraphNode(child, pipeline, newTransform)
-

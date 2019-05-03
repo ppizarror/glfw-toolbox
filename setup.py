@@ -45,7 +45,7 @@ setup(
     ],
     description=__description__,
     include_package_data=True,
-    install_requires=['numpy', 'PyOpenGL', 'glfw', 'PIL'],
+    install_requires=['numpy', 'PyOpenGL', 'glfw', 'PIL', 'matplotlib'],
     license='MIT',
     long_description=long_description,
     name='glfw-toolbox',

@@ -32,10 +32,7 @@ SOFTWARE.
 """
 
 # Library imports
-from glfwToolbox.easy_shaders import toGPUShape as _toGPUShape
-import glfwToolbox.tripy as _tripy
 from glfwToolbox.mathlib import _normal_3_points as _normal3
-from glfwToolbox.advanced_shapes import AdvancedGPUShape as _AdvancedGPUShape
 
 
 # A simple class container to store vertices and indices that define a shape
@@ -389,45 +386,6 @@ def __vertexUnpack3(vertex):
     if len(vertex) == 2:
         vertex = vertex + (0,)
     return vertex
-
-
-def createColorPlaneFromCurve(curve, triangulate, r, g, b, center=None):
-    """
-    Creates a plane from a curve and a center.
-
-    :param curve: Curve vertex list
-    :param triangulate: Create plane from curve triangulation
-    :param center: Center position
-    :param r: Red color
-    :param g: Green color
-    :param b: Blue color
-    :return: Merged shape
-    :rtype: AdvancedGPUShape
-    """
-    shapes = []
-
-    # Use delaunay triangulation
-    if triangulate:
-        k = []
-        for i in curve:
-            k.append((i[0], i[1]))
-        tri = _tripy.earclip(k)
-        for i in tri:
-            x1, y1 = i[0]
-            x2, y2 = i[1]
-            x3, y3 = i[2]
-            shape = createTriangleColor((x1, y1, 0), (x2, y2, 0), (x3, y3, 0), r, g, b)
-            shapes.append(_toGPUShape(shape))
-    else:
-        if center is None:
-            center = curve[0]
-        for i in range(0, len(curve) - 1):
-            x1, y1 = curve[i]
-            x2, y2 = curve[(i + 1) % len(curve)]
-            c1, c2 = center
-            shape = createTriangleColor((x1, y1, 0), (x2, y2, 0), (c1, c2, 0), r, g, b)
-            shapes.append(_toGPUShape(shape))
-    return _AdvancedGPUShape(shapes)
 
 
 def create4VertexTexture(image_filename, p1, p2, p3, p4, nx=1, ny=1):
