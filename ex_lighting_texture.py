@@ -1,7 +1,7 @@
 # coding=utf-8
 """
 EXAMPLE-LIGHTING-TEXTURE
-Showing lighting effects over a textured object: Flat, Gauraud and Phong
+Showing lighting effects over a textured object: Flat, Gauraud and Phong.
 
 GLFW-TOOLBOX
 Toolbox for GLFW Graphic Library.

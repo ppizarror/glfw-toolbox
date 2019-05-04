@@ -1,6 +1,6 @@
 # coding=utf-8
 """
-EXAMPLE
+EXAMPLE-3DPLOT
 Creates a 3D plot using glfwToolbox.
 
 GLFW-TOOLBOX

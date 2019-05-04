@@ -1,7 +1,7 @@
 # coding=utf-8
 """
 EXAMPLE-LIGHTING
-Showing lighting effects: Flat, Gauraud and Phong
+Showing lighting effects: Flat, Gauraud and Phong.
 
 GLFW-TOOLBOX
 Toolbox for GLFW Graphic Library.

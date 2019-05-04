@@ -1,6 +1,6 @@
 # coding=utf-8
 """
-EXAMPLE
+EXAMPLE-CUBE
 Creates a 3D cube.
 
 GLFW-TOOLBOX

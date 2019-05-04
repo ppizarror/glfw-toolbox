@@ -1,7 +1,7 @@
 # coding=utf-8
 """
 EXAMPLE-SCENE-GRAPH-2D-CARS
-Drawing many cars in 2D using scene_graph.
+Drawing many cars in 2D using scene graph.
 
 GLFW-TOOLBOX
 Toolbox for GLFW Graphic Library.
