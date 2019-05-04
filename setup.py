@@ -40,12 +40,11 @@ setup(
     classifiers=[
         'License :: OSI Approved :: MIT License',
         'Operating System :: OS Independent',
-        'Programming Language :: Python',
-        'Topic :: Software Development :: Libraries :: glfw'
+        'Programming Language :: Python'
     ],
     description=__description__,
     include_package_data=True,
-    install_requires=['numpy', 'PyOpenGL', 'glfw', 'PIL', 'matplotlib'],
+    install_requires=['numpy', 'PyOpenGL', 'glfw', 'Pillow', 'matplotlib'],
     license='MIT',
     long_description=long_description,
     name='glfw-toolbox',

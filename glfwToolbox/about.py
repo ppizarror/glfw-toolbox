@@ -29,5 +29,5 @@ SOFTWARE.
 __author__ = 'Pablo Pizarro @ppizarror.com'
 __description__ = 'GLFW toolbox'
 __email__ = 'pablo.pizarro@ing.uchile.cl'
-__version__ = '1.0.0'
+__version__ = '1.0.1'
 __url__ = 'https://github.com/ppizarror/glfw-toolbox'
