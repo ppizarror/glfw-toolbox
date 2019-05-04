@@ -1,6 +1,6 @@
 # coding=utf-8
 """
-EXAMPLE
+EXAMPLE-CYLINDER
 3D Cylinder.
 
 GLFW-TOOLBOX
