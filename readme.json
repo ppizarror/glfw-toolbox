@@ -1,0 +1,42 @@
+{
+    "PROJECT": {
+        "NAME": "glfw-toolbox",
+        "ICON": {
+            "IMAGE": "https://ppizarror.com/resources/other/python.png",
+            "ALT": "glfw-toolbox",
+            "WIDTH": 200,
+            "HEIGHT": 200
+        },
+        "URL": "https://ppizarror.com/glfw-toolbox/",
+        "URL_TITLE": "glfw-toolbox"
+    },
+    "AUTHOR": {
+        "NAME": "Pablo Pizarro R.",
+        "URL": "https://ppizarror.com",
+        "ALT": "ppizarror",
+        "DATE": "2019",
+        "SECTION": {
+            "TITLE": "Author",
+            "SHOW": true
+        }
+    },
+    "DESCRIPTION": "Toolbox for glfw+OpenGL",
+    "BADGES": {
+        "0": {
+            "IMAGE": "https://ppizarror.com/badges/author.svg",
+            "HREF": "https://ppizarror.com",
+            "ALT": "@ppizarror"
+        },
+        "1": {
+            "IMAGE": "https://ppizarror.com/badges/licensemit.svg",
+            "HREF": "https://opensource.org/licenses/MIT/",
+            "ALT": "License MIT"
+        },
+        "2": {
+            "IMAGE": "https://ppizarror.com/badges/python36.svg",
+            "HREF": "https://www.python.org/downloads/",
+            "ALT": "Python 3.6"
+        }
+    },
+    "CONTENT": "readme.content.md"
+}
