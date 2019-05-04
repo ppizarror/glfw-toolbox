@@ -31,7 +31,7 @@ SOFTWARE.
 from setuptools import setup
 from glfwToolbox.about import __author__, __description__, __email__, __url__, __version__
 
-with open('README.md') as f:
+with open('README.rst') as f:
     long_description = f.read()
 
 setup(
