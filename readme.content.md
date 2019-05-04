@@ -10,7 +10,7 @@ glfwToolbox can be installed via pip. Simply run:
 pip install glfw-toolbox
 ```
 
-PyOpenGL-toolbox needs glfw, numpy, PyOpenGL, PIL and matplotlib.
+PyOpenGL-toolbox needs glfw, numpy, PyOpenGL, Pillow and matplotlib libraries.
 
 ## Import
 
@@ -20,4 +20,4 @@ from glfwToolbox import *
 ```
 
 ## License
-This project is licensed unde MIT [https://opensource.org/licenses/MIT/]
+This project is licensed under MIT [https://opensource.org/licenses/MIT/]
