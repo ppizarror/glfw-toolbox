@@ -113,7 +113,7 @@ if __name__ == '__main__':
     width = 800
     height = 800
 
-    window = glfw.create_window(width, height, 'Cilindro bonito', None, None)
+    window = glfw.create_window(width, height, '3D Cylinder', None, None)
 
     if not window:
         glfw.terminate()
@@ -209,6 +209,7 @@ if __name__ == '__main__':
 
     # Main execution loop
     while not glfw.window_should_close(window):
+
         # Using GLFW to check for input events
         glfw.poll_events()
 

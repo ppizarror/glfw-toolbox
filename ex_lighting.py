@@ -146,6 +146,7 @@ if __name__ == '__main__':
     # Create light
     obj_light = Light(shader=phongPipeline, position=[5, 5, 5], color=[1, 1, 1])
 
+    # Mainloop
     while not glfw.window_should_close(window):
 
         # Using GLFW to check for input events

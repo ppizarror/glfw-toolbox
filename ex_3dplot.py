@@ -144,7 +144,7 @@ if __name__ == '__main__':
     width = 800
     height = 800
 
-    window = glfw.create_window(width, height, 'Graficador cuma', None, None)
+    window = glfw.create_window(width, height, '3D Function Plot - OpenGL', None, None)
 
     if not window:
         glfw.terminate()
@@ -240,8 +240,9 @@ if __name__ == '__main__':
     # projection = tr.ortho(-1, 1, -1, 1, 0.1, 100)
     projection = tr.perspective(45, float(width) / float(height), 0.1, 100)
 
-    # Main loop
+    # Mainloop
     while not glfw.window_should_close(window):
+        
         # Using GLFW to check for input events
         glfw.poll_events()
 

@@ -48,7 +48,7 @@ class Controller:
     def __init__(self):
         self.fillPolygon = True
         self.showAxis = True
-        self.lightingModel = LIGHT_FLAT
+        self.lightingModel = LIGHT_PHONG
 
 
 # We will use the global controller as communication with the callback function
@@ -113,7 +113,8 @@ if __name__ == '__main__':
 
     # Creating shapes on GPU memory
     gpuAxis = es.to_gpu_shape(shapes.create_axis(4))
-    gpuTextureCube = es.to_gpu_shape(shapes.create_texture_normals_cube('example_data/bricks.jpg'), GL_REPEAT, GL_LINEAR)
+    gpuTextureCube = es.to_gpu_shape(shapes.create_texture_normals_cube('example_data/bricks.jpg'), GL_REPEAT,
+                                     GL_LINEAR)
 
     t0 = glfw.get_time()
     camera_theta = np.pi / 4
@@ -121,6 +122,7 @@ if __name__ == '__main__':
     # Create light
     obj_light = Light(position=[5, 5, 5], color=[1, 1, 1])
 
+    # Mainloop
     while not glfw.window_should_close(window):
 
         # Using GLFW to check for input events
