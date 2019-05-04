@@ -1,7 +1,7 @@
 # coding=utf-8
 """
-EXAMPLE-SCENE-GRAPH-3D-CARS
-Drawing 3D cars via scene graph.
+EXAMPLE-SCENE-GRAPH-2D-CARS
+Drawing many cars in 2D using scene_graph.
 
 GLFW-TOOLBOX
 Toolbox for GLFW Graphic Library.
@@ -39,52 +39,30 @@ import glfwToolbox.scene_graph as sg
 import glfwToolbox.easy_shaders as es
 
 
-# A class to store the application control
-class Controller:
-    def __init__(self):
-        self.fillPolygon = True
-        self.showAxis = True
-
-
-# We will use the global controller as communication with the callback function
-controller = Controller()
-
-
 # noinspection PyUnusedLocal,PyShadowingNames
 def on_key(window, key, scancode, action, mods):
     if action != glfw.PRESS:
         return
 
-    global controller
-
-    if key == glfw.KEY_SPACE:
-        controller.fillPolygon = not controller.fillPolygon
-
-    elif key == glfw.KEY_LEFT_CONTROL:
-        controller.showAxis = not controller.showAxis
-
-    elif key == glfw.KEY_ESCAPE:
+    if key == glfw.KEY_ESCAPE:
         sys.exit()
-
     else:
         print('Unknown key')
 
 
-def create_car(r, g, b):
+def create_car():
     """
-    Create car model.
+    Create car object.
 
-    :param r:
-    :param g:
-    :param b:
     :return:
     """
-    gpu_black_quad = es.to_gpu_shape(shapes.create_color_cube(0, 0, 0))
-    gpu_chasis_quad = es.to_gpu_shape(shapes.create_color_cube(r, g, b))
+
+    gpu_black_quad = es.to_gpu_shape(shapes.create_color_quad(0, 0, 0))
+    gpu_red_quad = es.to_gpu_shape(shapes.create_color_quad(1, 0, 0))
 
     # Cheating a single wheel
     wheel = sg.SceneGraphNode('wheel')
-    wheel.transform = tr.scale(0.2, 0.8, 0.2)
+    wheel.transform = tr.uniform_scale(0.2)
     wheel.childs += [gpu_black_quad]
 
     wheel_rotation = sg.SceneGraphNode('wheel_rotation')
@@ -92,25 +70,56 @@ def create_car(r, g, b):
 
     # Instanciating 2 wheels, for the front and back parts
     front_wheel = sg.SceneGraphNode('front_wheel')
-    front_wheel.transform = tr.translate(0.3, 0, -0.3)
+    front_wheel.transform = tr.translate(0.3, -0.3, 0)
     front_wheel.childs += [wheel_rotation]
 
     back_wheel = sg.SceneGraphNode('back_wheel')
-    back_wheel.transform = tr.translate(-0.3, 0, -0.3)
+    back_wheel.transform = tr.translate(-0.3, -0.3, 0)
     back_wheel.childs += [wheel_rotation]
 
     # Creating the chasis of the car
     chasis = sg.SceneGraphNode('chasis')
-    chasis.transform = tr.scale(1, 0.7, 0.5)
-    chasis.childs += [gpu_chasis_quad]
+    chasis.transform = tr.scale(1, 0.5, 1)
+    chasis.childs += [gpu_red_quad]
 
-    # All pieces together
     car = sg.SceneGraphNode('car')
     car.childs += [chasis]
     car.childs += [front_wheel]
     car.childs += [back_wheel]
 
-    return car
+    traslated_car = sg.SceneGraphNode('traslated_car')
+    traslated_car.transform = tr.translate(0, 0.3, 0)
+    traslated_car.childs += [car]
+
+    return traslated_car
+
+
+def create_cars(n):
+    """
+    Create cars.
+
+    :param n: Number of cars
+    :return:
+    """
+
+    # First we scale a car
+    scaled_car = sg.SceneGraphNode('traslated_car')
+    scaled_car.transform = tr.uniform_scale(0.15)
+    scaled_car.childs += [create_car()]  # Re-using the previous function
+
+    _cars = sg.SceneGraphNode('cars')
+
+    base_name = 'scaled_car'
+    for i in range(n):
+        # A new node is only locating a scaled_car in the scene depending on index i
+        new_node = sg.SceneGraphNode(base_name + str(i))
+        new_node.transform = tr.translate(0.4 * i - 0.9, 0.9 - 0.4 * i, 0)
+        new_node.childs += [scaled_car]
+
+        # Now this car is added to the 'cars' scene graph
+        _cars.childs += [new_node]
+
+    return _cars
 
 
 if __name__ == '__main__':
@@ -122,7 +131,7 @@ if __name__ == '__main__':
     width = 600
     height = 600
 
-    window = glfw.create_window(width, height, '3D cars via scene graph', None, None)
+    window = glfw.create_window(width, height, '2D Cars via scene graph', None, None)
 
     if not window:
         glfw.terminate()
@@ -134,66 +143,52 @@ if __name__ == '__main__':
     glfw.set_key_callback(window, on_key)
 
     # Assembling the shader program (pipeline) with both shaders
-    mvcPipeline = es.SimpleModelViewProjectionShaderProgram()
+    pipeline = es.SimpleModelViewProjectionShaderProgram()
 
     # Telling OpenGL to use our shader program
-    glUseProgram(mvcPipeline.shaderProgram)
+    glUseProgram(pipeline.shaderProgram)
 
     # Setting up the clear screen color
     glClearColor(0.85, 0.85, 0.85, 1.0)
 
-    # As we work in 3D, we need to check which part is in front,
-    # and which one is at the back
-    glEnable(GL_DEPTH_TEST)
-
     # Creating shapes on GPU memory
-    gpuAxis = es.to_gpu_shape(shapes.create_axis(7))
-    redCarNode = create_car(1, 0, 0)
-    blueCarNode = create_car(0, 0, 1)
+    cars = create_cars(5)
 
-    blueCarNode.transform = np.matmul(tr.rotation_z(-np.pi / 4), tr.translate(3.0, 0, 0.5))
+    # Our shapes here are always fully painted
+    glPolygonMode(GL_FRONT_AND_BACK, GL_FILL)
 
-    # Using the same view and projection matrices in the whole application
-    projection = tr.perspective(45, float(width) / float(height), 0.1, 100)
-    glUniformMatrix4fv(glGetUniformLocation(mvcPipeline.shaderProgram, "projection"), 1, GL_TRUE, projection)
+    projection = tr.ortho(-1, 1, -1, 1, 0.1, 10)
+    glUniformMatrix4fv(glGetUniformLocation(pipeline.shaderProgram, 'projection'), 1, GL_TRUE, projection)
 
     view = tr.look_at(
-        np.array([5, 5, 7]),
+        np.array([0, 0, 2]),
         np.array([0, 0, 0]),
-        np.array([0, 0, 1])
+        np.array([0, 1, 0])
     )
-    glUniformMatrix4fv(glGetUniformLocation(mvcPipeline.shaderProgram, 'view'), 1, GL_TRUE, view)
+    glUniformMatrix4fv(glGetUniformLocation(pipeline.shaderProgram, 'view'), 1, GL_TRUE, view)
 
     # Mainloop
     while not glfw.window_should_close(window):
-
         # Using GLFW to check for input events
         glfw.poll_events()
 
         # Clearing the screen in both, color and depth
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
+        glClear(GL_COLOR_BUFFER_BIT)
 
-        # Filling or not the shapes depending on the controller state
-        if controller.fillPolygon:
-            glPolygonMode(GL_FRONT_AND_BACK, GL_FILL)
-        else:
-            glPolygonMode(GL_FRONT_AND_BACK, GL_LINE)
+        # Modifying only a specific node in the scene graph
+        wheelRotationNode = sg.find_node(cars, 'wheel_rotation')
+        theta = -10 * glfw.get_time()
+        wheelRotationNode.transform = tr.rotation_z(theta)
 
-        if controller.showAxis:
-            glUniformMatrix4fv(glGetUniformLocation(mvcPipeline.shaderProgram, "model"), 1, GL_TRUE, tr.identity())
-            mvcPipeline.draw_shape(gpuAxis, GL_LINES)
+        # Modifying only car 3
+        car3 = sg.find_node(cars, 'scaled_car3')
+        car3.transform = tr.translate(0.3, 0.5 * np.sin(0.1 * theta), 0)
 
-        # Moving the red car and rotating its wheels
-        redCarNode.transform = tr.translate(3 * np.sin(glfw.get_time()), 0, 0.5)
-        redWheelRotationNode = sg.find_node(redCarNode, 'wheel_rotation')
-        redWheelRotationNode.transform = tr.rotation_y(-10 * glfw.get_time())
-
-        # Uncomment to print the red car position on every iteration
-        # print(sg.find_position(redCarNode, 'car'))
+        # Uncomment to see the position of scaledCar_3, it will fill your terminal
+        # print('car3_position =', sg.find_position(cars, 'scaled_car3'))
 
         # Drawing the Car
-        sg.draw_scene_graph_node(redCarNode, mvcPipeline)
-        sg.draw_scene_graph_node(blueCarNode, mvcPipeline)
+        sg.draw_scene_graph_node(cars, pipeline)
 
         # Once the render is done, buffers are swapped, showing only the complete scene.
         glfw.swap_buffers(window)
