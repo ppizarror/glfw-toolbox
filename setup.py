@@ -50,6 +50,7 @@ setup(
     long_description=long_description,
     name='glfw-toolbox',
     packages=['glfwToolbox'],
+    python_requires='>3.5',
     url=__url__,
     version=__version__
 )

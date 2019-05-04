@@ -1,7 +1,6 @@
 # coding=utf-8
 """
-EXAMPLE
-Daniel Calderon, CC3501, 2019-1
+EXAMPLE-LIGHTING
 Showing lighting effects: Flat, Gauraud and Phong
 
 GLFW-TOOLBOX
