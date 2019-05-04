@@ -242,7 +242,7 @@ if __name__ == '__main__':
 
     # Mainloop
     while not glfw.window_should_close(window):
-        
+
         # Using GLFW to check for input events
         glfw.poll_events()
 

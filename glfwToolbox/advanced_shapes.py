@@ -40,7 +40,7 @@ import glfwToolbox.transformations as _tr
 
 
 class AdvancedGPUShape(object):
-    def __init__(self, shapes, model=_tr.identity(), enabled=True, shader=None):
+    def __init__(self, shapes, model=_tr.identity(), enabled=True, shader=None, mode=None):
         """
         Constructor.
 
@@ -54,12 +54,15 @@ class AdvancedGPUShape(object):
         for i in range(len(shapes)):
             if not isinstance(shapes[i], _GPUShape):
                 raise Exception('Object {0} of shapes list is not GPUShape instance'.format(i))
+        if mode is None:
+            mode = _GL_TRIANGLES
 
         self._shapes = shapes
         self._model = model
         self._modelPrev = None
         self._enabled = enabled
         self._shader = shader
+        self._drawMode = mode
 
     def set_shader(self, shader):
         """
@@ -162,7 +165,7 @@ class AdvancedGPUShape(object):
         self._modelPrev = self._model
         self._model = _tr.matmul([t, self._model])
 
-    def draw(self, view=None, projection=None, mode=_GL_TRIANGLES, shader=None, usemodel=True):
+    def draw(self, view=None, projection=None, mode=None, shader=None, usemodel=True):
         """
         Draw model.
 
@@ -176,7 +179,10 @@ class AdvancedGPUShape(object):
         if not self._enabled:
             return
         if mode is None:
-            mode = _GL_POLYGON
+            if self._drawMode is None:
+                mode = _GL_POLYGON
+            else:
+                mode = self._drawMode
         if shader is None:
             if self._shader is None:
                 raise Exception('MergedShape shader is not set')

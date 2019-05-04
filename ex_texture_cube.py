@@ -1,7 +1,7 @@
 # coding=utf-8
 """
-EXAMPLE-TEXTURE-BOO
-Texture example.
+EXAMPLE-TEXTURE-CUBE
+Texture cube.
 
 GLFW-TOOLBOX
 Toolbox for GLFW Graphic Library.
@@ -33,10 +33,11 @@ from OpenGL.GL import *
 import numpy as np
 import sys
 
-import glfwToolbox.transformations as tr
+from glfwToolbox.advanced_shapes import AdvancedGPUShape
 import glfwToolbox.shapes as shapes
 import glfwToolbox.easy_shaders as es
-from glfwToolbox.advanced_shapes import AdvancedGPUShape
+import glfwToolbox.transformations as tr
+from glfwToolbox.opengl import clear_buffer
 
 
 # A class to store the application control
@@ -73,7 +74,7 @@ if __name__ == '__main__':
     width = 600
     height = 600
 
-    window = glfw.create_window(width, height, "Boo!", None, None)
+    window = glfw.create_window(width, height, "Cube with texture", None, None)
 
     if not window:
         glfw.terminate()
@@ -84,31 +85,32 @@ if __name__ == '__main__':
     # Connecting the callback function 'on_key' to handle keyboard events
     glfw.set_key_callback(window, on_key)
 
-    # A simple shader program with position and texture coordinates as inputs.
-    pipeline = es.SimpleTextureTransformShaderProgram()
-
-    # Telling OpenGL to use our shader program
-    glUseProgram(pipeline.shaderProgram)
+    # Creating shader programs for textures and for colores
+    textureShaderProgram = es.SimpleTextureModelViewProjectionShaderProgram()
+    colorShaderProgram = es.SimpleModelViewProjectionShaderProgram()
 
     # Setting up the clear screen color
-    glClearColor(0.25, 0.25, 0.25, 1.0)
+    glClearColor(0.15, 0.15, 0.15, 1.0)
 
-    # Enabling transparencies
-    glEnable(GL_BLEND)
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
+    # As we work in 3D, we need to check which part is in front,
+    # and which one is at the back
+    glEnable(GL_DEPTH_TEST)
 
     # Creating shapes on GPU memory
-    gpuBoo = es.to_gpu_shape(shapes.create_texture_quad('example_data/boo.png'), GL_REPEAT, GL_NEAREST)
-    gpuQuestionBox = es.to_gpu_shape(shapes.create_texture_quad('example_data/question_box.png', 10, 1), GL_REPEAT,
-                                     GL_NEAREST)
+    gpuTextureCube = es.to_gpu_shape(shapes.create_texture_cube('example_data/bricks.jpg'), GL_REPEAT, GL_LINEAR)
+    gpuAxis = es.to_gpu_shape(shapes.create_axis(100))
 
-    # Create objets
-    obj_boo = AdvancedGPUShape(gpuBoo, shader=pipeline)
-    obj_question = AdvancedGPUShape(gpuQuestionBox, shader=pipeline)
+    # Create objects
+    obj_cube = AdvancedGPUShape(gpuTextureCube, shader=textureShaderProgram)
+    obj_axis = AdvancedGPUShape(gpuAxis, shader=colorShaderProgram, mode=GL_LINES)
 
-    # Apply object transform
-    obj_question.scale(sx=-2, sy=0.2)
-    obj_question.translate(ty=-0.8)
+    # Create projection and view matrix
+    projection = tr.ortho(-1, 1, -1, 1, 0.1, 100)
+    view = tr.look_at(
+        np.array([10, 10, 5]),
+        np.array([0, 0, 0]),
+        np.array([0, 0, 1])
+    )
 
     # Mainloop
     while not glfw.window_should_close(window):
@@ -116,32 +118,25 @@ if __name__ == '__main__':
         # Using GLFW to check for input events
         glfw.poll_events()
 
-        # OpenGL polygon mode
-        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL)
+        # Filling or not the shapes depending on the controller state
+        if controller.fillPolygon:
+            glPolygonMode(GL_FRONT_AND_BACK, GL_FILL)
+        else:
+            glPolygonMode(GL_FRONT_AND_BACK, GL_LINE)
 
         # Clearing the screen in both, color and depth
-        glClear(GL_COLOR_BUFFER_BIT)
+        clear_buffer()
 
         theta = glfw.get_time()
-        tx = 0.7 * np.sin(0.5 * theta)
-        ty = 0.2 * np.sin(5 * theta)
+        axis = np.array([1, -1, 1])
+        axis = axis / np.linalg.norm(axis)
+        obj_cube.apply_temporal_transform(tr.rotation_a(theta, axis))
 
-        # Derivative of tx give us the direction
-        dtx = 0.7 * 0.5 * np.cos(0.5 * theta)
-        if dtx > 0:
-            reflex = tr.scale(-1, 1, 1)
-        else:
-            reflex = tr.identity()
+        # Draw objects
+        obj_axis.draw(view, projection)
+        obj_cube.draw(view, projection)
 
-        # Create booObj transformation
-        booT = tr.matmul([tr.translate(tx, ty, 0), tr.scale(0.5, 0.5, 1.0), reflex])
-        obj_boo.apply_temporal_transform(booT)
-
-        # Draw shapes
-        obj_boo.draw()
-        obj_question.draw()
-
-        # Once the render is done, buffers are swapped, showing only the complete scene.
+        # Once the drawing is rendered, buffers are swap so an uncomplete drawing is never seen.
         glfw.swap_buffers(window)
 
     glfw.terminate()

@@ -96,10 +96,8 @@ def on_key(window_obj, key, scancode, action, mods):
 
     if key == glfw.KEY_SPACE:
         controller.fillPolygon = not controller.fillPolygon
-
     elif key == glfw.KEY_ESCAPE:
         sys.exit()
-
     elif key == glfw.KEY_Z:
         obj_light.change_color(np.random.random(), np.random.random(), np.random.random())
 
