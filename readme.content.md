@@ -15,9 +15,11 @@ PyOpenGL-toolbox needs glfw, numpy, PyOpenGL, Pillow and matplotlib libraries.
 ## Import
 
 Import of this library is similar as PyOpenGL:
+
 ```python
 from glfwToolbox import *
 ```
 
 ## License
+
 This project is licensed under MIT [https://opensource.org/licenses/MIT/]
