@@ -1,7 +1,5 @@
 <h1 align="center">
-  <a href="https://github.ppizarror.com/glfw-toolbox/" title="glfw-toolbox">
-    <img alt="glfw-toolbox" src="https://res.ppizarror.com/other/python.png" width="200px" height="200px" />
-  </a>
+  <img alt="glfw-toolbox" src="https://res.ppizarror.com/other/python.png" width="200px" height="200px" />
   <br /><br />
   glfw-toolbox</h1>
 <p align="center">Toolbox for glfw+OpenGL</p>
