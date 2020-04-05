@@ -28,6 +28,6 @@ SOFTWARE.
 # Metadata
 __author__ = 'Pablo Pizarro @ppizarror.com'
 __description__ = 'GLFW toolbox'
-__email__ = 'pablo.pizarro@ing.uchile.cl'
+__email__ = 'pablo@ppizarror.com'
 __version__ = '1.0.1'
 __url__ = 'https://github.com/ppizarror/glfw-toolbox'
