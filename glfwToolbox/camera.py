@@ -57,7 +57,7 @@ class _Camera(object):
     Abstract camera class.
     """
 
-    def __init__(self) -> None:
+    def __init__(self):
         """
         Void constructor.
         """
@@ -336,7 +336,7 @@ class CameraXYZ(_Camera):
     Camera in XYZ, position (x,y,z), can rotate around z.
     """
 
-    def __init__(self, pos, center=_Point3(0, 0, 0), up=_Point3(0, 0, 1)) -> None:
+    def __init__(self, pos, center=_Point3(0, 0, 0), up=_Point3(0, 0, 1)):
         """
         Constructor.
 
@@ -645,7 +645,7 @@ class CameraR(_Camera):
     Camera in spheric coordinates.
     """
 
-    def __init__(self, r=1.0, phi=45, theta=45, center=_Point3(), up=_Vector3(0, 0, 1)) -> None:
+    def __init__(self, r=1.0, phi=45, theta=45, center=_Point3(), up=_Vector3(0, 0, 1)):
         """
         Constructor.
 
