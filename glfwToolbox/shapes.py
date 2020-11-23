@@ -10,7 +10,7 @@ GLFW-TOOLBOX
 Toolbox for GLFW Graphic Library.
 
 MIT License
-Copyright (c) 2019 Pablo Pizarro R.
+Copyright (c) 2019-2020 Pablo Pizarro R.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the 'Software'), to deal
@@ -43,21 +43,24 @@ class Shape:
         self.textureFileName = texture_file_name
 
 
-def create_axis(length=1.0):
+def create_axis(length=1.0, use_neg=True):
     """
+    Create axis.
+
     :param length:
-    :return:
+    :param use_neg: If False, Only defined in Positive planes
+    :return: Axis object
     """
     # Defining the location and colors of each vertex  of the shape
     vertices = [
         #    positions        colors
-        -length, 0.0, 0.0, 0.0, 0.0, 0.0,
+        -length * use_neg, 0.0, 0.0, 1.0, 0.0, 0.0,
         length, 0.0, 0.0, 1.0, 0.0, 0.0,
 
-        0.0, -length, 0.0, 0.0, 0.0, 0.0,
+        0.0, -length * use_neg, 0.0, 0.0, 1.0, 0.0,
         0.0, length, 0.0, 0.0, 1.0, 0.0,
 
-        0.0, 0.0, -length, 0.0, 0.0, 0.0,
+        0.0, 0.0, -length * use_neg, 0.0, 0.0, 1.0,
         0.0, 0.0, length, 0.0, 0.0, 1.0]
 
     # Defining connections among vertices

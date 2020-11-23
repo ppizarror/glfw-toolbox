@@ -7,7 +7,7 @@ GLFW-TOOLBOX
 Toolbox for GLFW Graphic Library.
 
 MIT License
-Copyright (c) 2019 Pablo Pizarro R.
+Copyright (c) 2019-2020 Pablo Pizarro R.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the 'Software'), to deal
@@ -29,11 +29,13 @@ SOFTWARE.
 """
 
 # Library imports
-from OpenGL.GL import glLoadIdentity as _glLoadIdentity
-from OpenGL.GLU import gluLookAt as _gluLookAt
 from glfwToolbox.mathlib import _cos, _sin, _xyz_to_spr, _spr_to_xyz
 from glfwToolbox.mathlib import Point3 as _Point3
 from glfwToolbox.mathlib import Vector3 as _Vector3
+import glfwToolbox.transformations as tr
+
+from OpenGL.GL import glLoadIdentity as _glLoadIdentity
+from OpenGL.GLU import gluLookAt as _gluLookAt
 import math as _math
 import numpy as _np
 
@@ -55,7 +57,7 @@ class _Camera(object):
     Abstract camera class.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         """
         Void constructor.
         """
@@ -70,8 +72,6 @@ class _Camera(object):
     def get_view(self):
         """
         Get view matrix.
-
-        :return:
         :rtype: array
         """
         return self._look_at(
@@ -82,54 +82,56 @@ class _Camera(object):
 
     def get_pos_x(self):
         """
-        Return x position.
+        Returns x position.
 
-        :return:
         :rtype: float, int
         """
         pass
 
     def get_pos_y(self):
         """
-        Return y position.
+        Returns y position.
 
-        :return:
         :rtype: float, int
         """
         pass
 
     def get_pos_z(self):
         """
-        Return z position.
+        Returns z position.
 
-        :return:
         :rtype: float, int
         """
         pass
 
+    def get_center_translation(self):
+        """
+        Returns center as a translation.
+
+        :return: Translation matrix
+        """
+        return tr.translate(self.get_center_x(), self.get_center_y(), self.get_center_z())
+
     def get_center_x(self):
         """
-        Return center x position.
+        Returns center x position.
 
-        :return:
         :rtype: float, int
         """
         pass
 
     def get_center_y(self):
         """
-        Return center y position.
+        Returns center y position.
 
-        :return:
         :rtype: float, int
         """
         pass
 
     def get_center_z(self):
         """
-        Return center x position.
+        Returns center x position.
 
-        :return:
         :rtype: float, int
         """
         pass
@@ -137,8 +139,6 @@ class _Camera(object):
     def get_up_x(self):
         """
         Return up vector x position.
-
-        :return:
         :rtype: float, int
         """
         pass
@@ -146,8 +146,6 @@ class _Camera(object):
     def get_up_y(self):
         """
         Return up vector y position.
-
-        :return:
         :rtype: float, int
         """
         pass
@@ -155,8 +153,6 @@ class _Camera(object):
     def get_up_z(self):
         """
         Return up vector z position.
-
-        :return:
         :rtype: float, int
         """
         pass
@@ -317,7 +313,6 @@ class _Camera(object):
         :param _eye:
         :param _at:
         :param _up:
-        :return:
         """
         forward = (_at - _eye)
         forward /= _np.linalg.norm(forward)
@@ -341,7 +336,7 @@ class CameraXYZ(_Camera):
     Camera in XYZ, position (x,y,z), can rotate around z.
     """
 
-    def __init__(self, pos, center=_Point3(0, 0, 0), up=_Point3(0, 0, 1)):
+    def __init__(self, pos, center=_Point3(0, 0, 0), up=_Point3(0, 0, 1)) -> None:
         """
         Constructor.
 
@@ -382,8 +377,6 @@ class CameraXYZ(_Camera):
     def get_pos_x(self):
         """
         Return x position.
-
-        :return:
         :rtype: float, int
         """
         return self._pos.get_x()
@@ -391,8 +384,6 @@ class CameraXYZ(_Camera):
     def get_pos_y(self):
         """
         Return y position.
-
-        :return:
         :rtype: float, int
         """
         return self._pos.get_y()
@@ -400,16 +391,12 @@ class CameraXYZ(_Camera):
     def get_pos_z(self):
         """
         Return z position.
-
-        :return:
         """
         return self._pos.get_z()
 
     def get_center_x(self):
         """
         Return center x position.
-
-        :return:
         :rtype: float, int
         """
         return self._center.get_x()
@@ -417,8 +404,6 @@ class CameraXYZ(_Camera):
     def get_center_y(self):
         """
         Return center y position.
-
-        :return:
         :rtype: float, int
         """
         return self._center.get_y()
@@ -426,8 +411,6 @@ class CameraXYZ(_Camera):
     def get_center_z(self):
         """
         Return center x position.
-
-        :return:
         :rtype: float, int
         """
         return self._center.get_z()
@@ -435,8 +418,6 @@ class CameraXYZ(_Camera):
     def get_up_x(self):
         """
         Return up vector x position.
-
-        :return:
         :rtype: float, int
         """
         return self._up.get_x()
@@ -444,8 +425,6 @@ class CameraXYZ(_Camera):
     def get_up_y(self):
         """
         Return up vector y position.
-
-        :return:
         :rtype: float, int
         """
         return self._up.get_y()
@@ -453,8 +432,6 @@ class CameraXYZ(_Camera):
     def get_up_z(self):
         """
         Return up vector z position.
-
-        :return:
         :rtype: float, int
         """
         return self._up.get_z()
@@ -668,7 +645,7 @@ class CameraR(_Camera):
     Camera in spheric coordinates.
     """
 
-    def __init__(self, r=1.0, phi=45, theta=45, center=_Point3(), up=_Vector3(0, 0, 1)):
+    def __init__(self, r=1.0, phi=45, theta=45, center=_Point3(), up=_Vector3(0, 0, 1)) -> None:
         """
         Constructor.
 
@@ -688,6 +665,7 @@ class CameraR(_Camera):
             if isinstance(up, _Vector3):
                 if r > 0:
                     if 0 <= phi <= 360 and 0 <= theta <= 180:
+                        self._relpos = _Point3()  # Point added to computed by r*cos*sin
                         self._center = center
                         self._name = 'unnamed'
                         self._phi = phi
@@ -703,6 +681,8 @@ class CameraR(_Camera):
                 raise Exception('up_vector must be Vector3 type')
         else:
             raise Exception('center must be Point3 type')
+        self._max_rad = 0
+        self._min_rad = 0
 
     def set_r_vel(self, vel):
         """
@@ -721,9 +701,9 @@ class CameraR(_Camera):
         Place camera in world.
         """
         _glLoadIdentity()
-        _gluLookAt(self._r * _sin(self._theta) * _cos(self._phi),
-                   self._r * _sin(self._theta) * _sin(self._phi),
-                   self._r * _cos(self._theta),
+        _gluLookAt(self._r * _sin(self._theta) * _cos(self._phi) + self._relpos.get_x(),
+                   self._r * _sin(self._theta) * _sin(self._phi) + self._relpos.get_y(),
+                   self._r * _cos(self._theta) + self._relpos.get_z(),
                    self._center.get_x(), self._center.get_y(), self._center.get_z(),
                    self._up.get_x(), self._up.get_y(),
                    self._up.get_z())
@@ -731,8 +711,6 @@ class CameraR(_Camera):
     def get_pos_x(self):
         """
         Return x position.
-
-        :return:
         :rtype: float, int
         """
         return self._r * _sin(self._theta) * _cos(self._phi)
@@ -740,8 +718,6 @@ class CameraR(_Camera):
     def get_pos_y(self):
         """
         Return y position.
-
-        :return:
         :rtype: float, int
         """
         return self._r * _sin(self._theta) * _sin(self._phi)
@@ -749,8 +725,6 @@ class CameraR(_Camera):
     def get_pos_z(self):
         """
         Return z position.
-
-        :return:
         :rtype: float, int
         """
         return self._r * _cos(self._theta)
@@ -758,8 +732,6 @@ class CameraR(_Camera):
     def get_center_x(self):
         """
         Return center x position.
-
-        :return:
         :rtype: float, int
         """
         return self._center.get_x()
@@ -767,8 +739,6 @@ class CameraR(_Camera):
     def get_center_y(self):
         """
         Return center y position.
-
-        :return:
         :rtype: float, int
         """
         return self._center.get_y()
@@ -776,8 +746,6 @@ class CameraR(_Camera):
     def get_center_z(self):
         """
         Return center x position.
-
-        :return:
         :rtype: float, int
         """
         return self._center.get_z()
@@ -785,8 +753,6 @@ class CameraR(_Camera):
     def get_up_x(self):
         """
         Return up vector x position.
-
-        :return:
         :rtype: float, int
         """
         return self._up.get_x()
@@ -794,8 +760,6 @@ class CameraR(_Camera):
     def get_up_y(self):
         """
         Return up vector y position.
-
-        :return:
         :rtype: float, int
         """
         return self._up.get_y()
@@ -803,11 +767,21 @@ class CameraR(_Camera):
     def get_up_z(self):
         """
         Return up vector z position.
-
-        :return:
         :rtype: float, int
         """
         return self._up.get_z()
+
+    def get_view(self):
+        """
+        Get view matrix.
+        :rtype: array
+        """
+        return self._look_at(
+            _np.array([self.get_pos_x() + self._relpos.get_x(), self.get_pos_y() + self._relpos.get_y(),
+                       self.get_pos_z() + self._relpos.get_z()]),
+            _np.array([self.get_center_x(), self.get_center_y(), self.get_center_z()]),
+            _np.array([self.get_up_x(), self.get_up_y(), self.get_up_z()])
+        )
 
     def __str__(self):
         """
@@ -828,20 +802,38 @@ class CameraR(_Camera):
                           round(self._up.get_x(), r), round(self._up.get_y(), r),
                           round(self._up.get_z(), r), self.get_name())
 
+    def set_max_radius(self, r):
+        """
+        Set max radius.
+
+        :param r: Max radius
+        """
+        assert r > 0
+        assert r > self._min_rad
+        self._max_rad = r
+
+    def set_min_radius(self, r):
+        """
+        Set min radius.
+
+        :param r: Min radius
+        """
+        assert 0 <= r < self._max_rad
+        self._min_rad = r
+
     def far(self):
         """
         Camera zoom-out.
         """
         self._r += self._rvel
+        if self._max_rad != 0:
+            self._r = min(self._r, self._max_rad)
 
     def close(self):
         """
         Camera zoom-in.
         """
-        r = self._r - self._rvel
-        if r < 0:  # Radius cannot be less than zero
-            return
-        self._r = r
+        self._r = max(self._r - self._rvel, self._min_rad)
 
     def rotate_phi(self, angle):
         """
@@ -896,6 +888,33 @@ class CameraR(_Camera):
         :type dist: float, int
         """
         self._center.set_y(self._center.get_y() + dist)
+
+    def move_x(self, direction=_CAMERA_POSITIVE):
+        """
+        Moves camera to x-position.
+
+        :param direction: X-axis position
+        :type direction: float, int
+        """
+        self._relpos.set_x(self._relpos.get_x() + direction)
+
+    def move_y(self, direction=_CAMERA_POSITIVE):
+        """
+        Moves camera to y-position.
+
+        :param direction: Y-axis position
+        :type direction: float, int
+        """
+        self._relpos.set_y(self._relpos.get_y() + direction)
+
+    def move_z(self, direction=_CAMERA_POSITIVE):
+        """
+        Moves camera to z-position.
+
+        :param direction: Z-axis position
+        :type direction: float, int
+        """
+        self._relpos.set_z(self._relpos.get_z() + direction)
 
     def move_center_z(self, dist):
         """

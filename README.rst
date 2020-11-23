@@ -1,8 +1,6 @@
 glfw-Toolbox
 ==============
 
-| Written for Python 3.X
-
 Source repo on `github <https://github.com/ppizarror/glfw-toolbox>`__
 
 Introduction

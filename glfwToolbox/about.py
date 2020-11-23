@@ -4,7 +4,7 @@ GLFW-TOOLBOX
 Toolbox for GLFW Graphic Library.
 
 MIT License
-Copyright (c) 2019 Pablo Pizarro R.
+Copyright (c) 2019-2020 Pablo Pizarro R.
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the 'Software'), to deal
@@ -29,5 +29,5 @@ SOFTWARE.
 __author__ = 'Pablo Pizarro @ppizarror.com'
 __description__ = 'GLFW toolbox'
 __email__ = 'pablo@ppizarror.com'
-__version__ = '1.0.1'
+__version__ = '1.1.0'
 __url__ = 'https://github.com/ppizarror/glfw-toolbox'
