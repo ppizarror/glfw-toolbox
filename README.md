@@ -39,4 +39,5 @@ This project is licensed under MIT [https://opensource.org/licenses/MIT/]
 Thanks to Daniel Calderón for providing many of the examples and shaders.
 
 ## Author
-<a href="https://ppizarror.com" title="ppizarror">Pablo Pizarro R.</a> | 2019 - 2020
+
+[Pablo Pizarro R.](https://ppizarror.com) | 2019 - 2020
